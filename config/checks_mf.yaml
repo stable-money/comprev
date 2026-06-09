@@ -1,0 +1,121 @@
+# =============================================================================
+# Mutual-Fund marketing-video compliance check library (Phase 1).
+#
+# Editable by non-engineers. One entry per check.
+#
+# IMPORTANT: Every regulatory specific below — exact disclaimer wording, on-
+# screen durations, voice-over pace — is a PLACEHOLDER to be confirmed by
+# compliance against the cited policy_ref. These values are NOT authoritative.
+# Do not treat a passing check as compliant until the placeholder is confirmed.
+#
+# Fields:
+#   id                    unique check identifier
+#   description           human-readable purpose
+#   surface               visual | audio | both   (where evidence is read)
+#   severity              serious | normal         (serious miss = regulatory event)
+#   applies_when          always | performance_shown | <named condition>
+#   required_text         exact text the check looks for (PLACEHOLDER wording)
+#   min_on_screen_seconds dwell-time requirement (PLACEHOLDER)
+#   policy_ref            clause to confirm
+#   pass_criteria         plain-language definition of a pass
+#   notes                 optional extra hints for the reasoning prompt
+# =============================================================================
+
+- id: mf_standard_warning_present
+  description: "Standard market-risk warning text is present on screen."
+  surface: visual
+  severity: serious
+  applies_when: always
+  # PLACEHOLDER wording — confirm exact AMFI/SEBI-mandated string & casing.
+  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
+  min_on_screen_seconds: 5      # PLACEHOLDER — confirm against current AMFI/SEBI code
+  policy_ref: "AMFI Code / SEBI Ad guidelines — confirm clause"
+  pass_criteria: "Required text appears, legible, for at least min_on_screen_seconds."
+
+- id: mf_standard_warning_voiced
+  description: "Standard market-risk warning is spoken in the audio voice-over."
+  surface: audio
+  severity: serious
+  applies_when: always
+  # PLACEHOLDER wording — voiced version may differ slightly from on-screen text.
+  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
+  policy_ref: "SEBI Ad guidelines — voice-over of risk warning — confirm clause & required VO pace"
+  pass_criteria: "Required warning is spoken intelligibly at an acceptable pace."
+  notes: "PLACEHOLDER: confirm required VO pace (words/minute or minimum spoken duration)."
+
+- id: mf_warning_duration_and_legibility
+  description: "The market-risk warning is on screen long enough and legible enough to read."
+  surface: visual
+  severity: serious
+  applies_when: always
+  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
+  min_on_screen_seconds: 5      # PLACEHOLDER — confirm
+  policy_ref: "SEBI Ad guidelines — disclaimer legibility & duration — confirm clause"
+  pass_criteria: >-
+    Warning text is present for at least min_on_screen_seconds AND legible
+    (sufficient size/contrast). Low OCR confidence on the warning region => uncertain.
+  notes: "Legibility judged from text-box height ratio and contrast in the visual corpus."
+
+- id: mf_risk_o_meter_present
+  description: "A Riskometer / risk-o-meter graphic is displayed for the scheme."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: vision
+  policy_ref: "SEBI Riskometer circular — confirm clause & display requirements"
+  pass_criteria: "A Riskometer graphic depicting the scheme's risk level is visibly present."
+  notes: "Perception check — answered via the vision API on sampled frames, not text matching."
+
+- id: mf_no_guaranteed_or_assured_returns
+  description: "No claim of guaranteed, assured, or risk-free returns (spoken or on screen)."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "SEBI Ad guidelines — prohibition on assured/guaranteed returns — confirm clause"
+  pass_criteria: "Neither the transcript nor the on-screen text promises guaranteed/assured/risk-free returns."
+  notes: >-
+    PLACEHOLDER banned phrasings (confirm/expand): "guaranteed returns",
+    "assured returns", "risk-free", "guaranteed 9%", "double your money",
+    "fixed returns". A violation on EITHER surface fails the check.
+
+- id: mf_no_specific_return_promise_without_basis
+  description: "No specific/forward return figure promised without a stated, valid basis."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "SEBI Ad guidelines — forward-looking return projections — confirm clause"
+  pass_criteria: >-
+    Any specific future return figure (e.g. "expect 15% p.a.") must carry a
+    legitimate, clearly stated basis; an unbacked promise is a violation on
+    either surface.
+  notes: "Distinguish factual past-performance disclosure (see performance check) from forward promises."
+
+- id: mf_past_performance_format_and_caveat
+  description: "If past performance is shown, it follows the prescribed format and carries the 'past performance may not be sustained' caveat."
+  surface: both
+  severity: normal
+  applies_when: performance_shown
+  # PLACEHOLDER caveat wording — confirm exact mandated text.
+  required_text: "Past performance may or may not be sustained in future"
+  policy_ref: "SEBI Ad guidelines — past performance presentation — confirm clause, format & period"
+  pass_criteria: >-
+    When performance figures appear, the prescribed caveat is present (spoken or
+    on screen) and the format/period requirements are met.
+  notes: "Only evaluated when performance figures are detected in either surface."
+
+- id: mf_superlatives_have_source_and_date
+  description: "Superlative or ranking claims (e.g. 'No. 1 fund', 'best performing') cite a source and date."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "SEBI Ad guidelines — substantiation of superlative claims — confirm clause"
+  pass_criteria: "Every superlative/ranking claim is accompanied by an attributable source and as-of date."
+  notes: 'PLACEHOLDER trigger terms (confirm/expand): "No. 1", "best", "top", "highest", "#1", "leading".'
+
+- id: mf_scheme_and_amc_disclosed
+  description: "The scheme name and the AMC / mutual fund house are clearly disclosed on screen."
+  surface: visual
+  severity: normal
+  applies_when: always
+  policy_ref: "AMFI Code — identification of scheme & AMC — confirm clause"
+  pass_criteria: "Both the scheme name and the AMC/fund-house name are legibly shown."

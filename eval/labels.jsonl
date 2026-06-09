@@ -1,0 +1,16 @@
+# labels.jsonl — ground truth for the eval harness. One JSON object per line.
+# Lines starting with '#' and blank lines are ignored.
+#
+# Schema (per line):
+#   {
+#     "video_id": "matches the video filename stem in the eval folder, e.g. clip01 -> clip01.mp4",
+#     "expected_checks": { "<check_id>": "pass" | "fail", ... },
+#     "breaches_present": ["<check_id>", ...]   # real breaches in this video (subset of expected_checks == fail)
+#   }
+#
+# Only list the checks you have ground truth for. Checks you omit are not scored.
+# Example rows (delete these and add your labeled videos):
+#
+# {"video_id": "clip01_clean", "expected_checks": {"mf_standard_warning_present": "pass", "mf_no_guaranteed_or_assured_returns": "pass", "mf_risk_o_meter_present": "pass"}, "breaches_present": []}
+# {"video_id": "clip02_guaranteed", "expected_checks": {"mf_no_guaranteed_or_assured_returns": "fail", "mf_standard_warning_present": "pass"}, "breaches_present": ["mf_no_guaranteed_or_assured_returns"]}
+# {"video_id": "clip03_no_warning", "expected_checks": {"mf_standard_warning_present": "fail", "mf_warning_duration_and_legibility": "fail"}, "breaches_present": ["mf_standard_warning_present", "mf_warning_duration_and_legibility"]}

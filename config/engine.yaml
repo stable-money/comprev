@@ -1,0 +1,50 @@
+# Engine runtime configuration. Tunable knobs live here; regulatory specifics
+# live in checks_mf.yaml. Nothing here is a compliance specific.
+
+# --- Claude API --------------------------------------------------------------
+# Model for both vision judgments and claim reasoning. API key comes from the
+# ANTHROPIC_API_KEY environment variable ONLY — never put a key in this file.
+model: "claude-opus-4-8"
+max_tokens: 2048
+
+# --- Visual pipeline ---------------------------------------------------------
+visual:
+  backend: "paddleocr"          # OcrEngine implementation to use
+  sample_interval_seconds: 2.0  # 1 frame / 2s baseline (plus scene-cut frames)
+  scene_detect: true            # add extra frames at PySceneDetect scene cuts
+  scene_threshold: 27.0         # PySceneDetect ContentDetector threshold
+  ocr_languages: ["en", "hi"]   # Latin + Devanagari (Hinglish); 'hi' = Devanagari in PaddleOCR 3.x
+  # Below this OCR confidence a detection is treated as low-confidence; any
+  # check that leans on it cannot return pass.
+  ocr_low_confidence: 0.6
+  # Legibility heuristics (NOT regulatory thresholds — these only decide whether
+  # we trust that text was *legible*, which feeds the duration/legibility check).
+  min_legible_height_ratio: 0.015
+  min_legible_contrast: 3.0
+  # Cap the frame width fed to OCR (aspect-preserving). Only bites above this
+  # width, so <=1440p frames are byte-identical; bounds multi-megapixel stills.
+  # Set null to OCR at full resolution.
+  ocr_max_width: 2560
+  # Latency knobs (quality-neutral). Frames are OCR'd across a pool of
+  # `ocr_max_workers` engines, each capped to `ocr_cpu_threads` native threads so
+  # concurrent OCR + ASR don't oversubscribe the CPU.
+  ocr_max_workers: 2
+  ocr_cpu_threads: 3
+  frame_extract_workers: 4      # parallel ffmpeg frame-extraction subprocesses
+
+# --- Audio pipeline ----------------------------------------------------------
+audio:
+  backend: "faster_whisper"     # AsrEngine implementation to use
+  model: "large-v3"             # large-v3 | medium | small ... (swappable)
+  compute_type: "int8"          # int8 is the pragmatic default on Apple-Silicon CPU
+  language: null                # null => autodetect (Hindi/Hinglish capable)
+  # avg_logprob below this marks a segment low-confidence (Whisper logprobs are
+  # negative; closer to 0 is more confident).
+  low_confidence_logprob: -1.0
+  # no_speech_prob above this also marks the segment low-confidence.
+  max_no_speech_prob: 0.6
+  cpu_threads: 4                # native ASR threads; budgeted with the OCR knobs
+
+# --- Fusion (Claude reasoning) -----------------------------------------------
+fusion:
+  max_parallel_checks: 9        # run the per-check Claude calls concurrently
