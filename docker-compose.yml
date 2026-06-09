@@ -1,0 +1,36 @@
+# Whole app on one host: FastAPI ML backend + Next.js frontend.
+#   ANTHROPIC_API_KEY is read from .env (never baked into the image).
+#   Reports/uploads/models persist in named volumes.
+#   Open http://localhost:3000
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - reports:/app/out        # the report store (the "database")
+      - uploads:/app/uploads
+      - paddle:/app/.paddlex     # cache OCR models across restarts
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./web/ui
+      args:
+        BACKEND_URL: http://backend:8000   # internal service DNS (build-time rewrite)
+    environment:
+      - BACKEND_URL=http://backend:8000     # runtime (server-component fetches)
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  reports:
+  uploads:
+  paddle:

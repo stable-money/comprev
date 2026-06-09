@@ -1,0 +1,31 @@
+# FastAPI + ML engine (PaddleOCR, faster-whisper). Large image by nature.
+# Build for the target host's arch — on Apple Silicon, deploy to amd64 hosts with:
+#   docker build --platform linux/amd64 -f Dockerfile.backend .
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    HOME=/app
+
+# System libs: ffmpeg (audio/frame extraction), libgl/glib (OpenCV), libgomp (Paddle).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ffmpeg libgl1 libglib2.0-0 libgomp1 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install the engine + web + ML extras. Copy only what the install needs first
+# so the heavy dependency layer caches across code changes.
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+RUN pip install -e ".[web,visual,audio]"
+
+# App code + config (engine reads config/, writes artifacts under /app/out).
+COPY config ./config
+COPY web/api ./web/api
+
+EXPOSE 8000
+
+# Production: no --reload (keeps the warm model pool across jobs).
+CMD ["uvicorn", "comprev_web.app:app", "--app-dir", "web/api", \
+     "--host", "0.0.0.0", "--port", "8000"]

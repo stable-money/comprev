@@ -1,0 +1,16 @@
+.git
+.venv
+out
+uploads
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+comprev.sqlite
+*.duckdb
+.env
+web/ui/node_modules
+web/ui/.next
+eval/*.mp4
+eval/*.mov
+.DS_Store
