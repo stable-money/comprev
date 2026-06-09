@@ -1,0 +1,47 @@
+# Render Blueprint — comprev (FastAPI ML backend + Next.js frontend).
+#
+# Deploy: Render Dashboard → New → Blueprint → connect github.com/varunfranc/comprev,
+# or `render blueprints` via the CLI. Then set the ANTHROPIC_API_KEY secret on the
+# backend service. Open the frontend service's URL.
+services:
+  # --- FastAPI + ML engine ---------------------------------------------------
+  - type: web
+    name: comprev-backend
+    runtime: docker
+    branch: main
+    dockerfilePath: ./Dockerfile.backend
+    dockerContext: .
+    region: oregon
+    # NOTE: ML backend is memory-heavy (PaddleOCR server detector + faster-whisper
+    # large-v3). 'standard' (2 GB) will likely OOM on a real review — bump to
+    # 'pro' (4 GB) or 'pro plus' (8 GB) before running real (non-stub) reviews.
+    plan: standard
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: reports            # persists out/ (the report store) across deploys
+      mountPath: /app/out
+      sizeGB: 1
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false            # secret — set in the dashboard or via the CLI
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+  # --- Next.js frontend ------------------------------------------------------
+  - type: web
+    name: comprev-frontend
+    runtime: docker
+    branch: main
+    dockerfilePath: ./web/ui/Dockerfile
+    dockerContext: ./web/ui
+    region: oregon
+    plan: starter
+    autoDeploy: true
+    envVars:
+      # Public URL of the backend service above. Render exposes service env vars
+      # to the Docker build, so this also feeds the Dockerfile's ARG BACKEND_URL
+      # (the /api rewrite is baked at build time) AND server-side fetches at run
+      # time. If Render appends a suffix to the backend name, update this value.
+      - key: BACKEND_URL
+        value: https://comprev-backend.onrender.com

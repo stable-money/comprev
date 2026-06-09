@@ -17,8 +17,9 @@ RUN pnpm build
 
 FROM node:20-slim AS runner
 WORKDIR /app
+# No fixed PORT: the platform injects $PORT (Render/Railway); Next's standalone
+# server.js falls back to 3000 when unset (compose). Bind all interfaces.
 ENV NODE_ENV=production \
-    PORT=3000 \
     HOSTNAME=0.0.0.0
 # Standalone server + static assets only — no node_modules bloat.
 COPY --from=builder /app/.next/standalone ./
