@@ -37,6 +37,10 @@ export interface VideoReport {
   checks: CheckResult[];
   needs_human_review: boolean;
   review_reasons: string[];
+  // The policy this verdict was judged under (stamped at review time).
+  policy_version?: string | null;
+  policy_source?: string | null;
+  checks_hash?: string | null;
   // Present when the original upload was preserved (out/<id>/source.*); null for
   // older reports run before previews existed.
   media_kind?: MediaKind | null;

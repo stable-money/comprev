@@ -199,16 +199,23 @@ export default async function ReportPage({
             {tally.pass} pass · {tally.fail} fail · {tally.uncertain} uncertain
           </span>
         </div>
-        {policy && (
+        {(report.policy_version || policy) && (
           <div className="text-muted-foreground text-sm">
             Checked against{" "}
-            <Link
-              href="/policies"
+            {/* The stamped policy is what actually judged THIS report; fall back
+                to the active check-library title for older, unstamped reports.
+                Link downloads the authoritative source policy doc for audit. */}
+            <a
+              href="/api/policy-doc"
               className="hover:text-foreground font-medium underline underline-offset-2"
             >
-              {policy.title}
-            </Link>{" "}
-            <span className="font-mono text-xs">({policy.name})</span>
+              {report.policy_version
+                ? `${report.product} — ${report.policy_version}`
+                : policy?.title}
+            </a>
+            {report.checks_hash && (
+              <span className="font-mono text-xs"> · checks {report.checks_hash}</span>
+            )}
           </div>
         )}
       </header>

@@ -1,121 +1,391 @@
 # =============================================================================
-# Mutual-Fund marketing-video compliance check library (Phase 1).
+# Mutual-Fund advertisement compliance check library.
+#
+# Operationalizes: "Advertisement Guidelines — Mutual Funds, May 2026"
+# (config/policies/mf-ad-guidelines-2026-05.docx). The active policy version is
+# declared in config/engine.yaml (policy.*) and stamped onto every report.
 #
 # Editable by non-engineers. One entry per check.
 #
-# IMPORTANT: Every regulatory specific below — exact disclaimer wording, on-
-# screen durations, voice-over pace — is a PLACEHOLDER to be confirmed by
-# compliance against the cited policy_ref. These values are NOT authoritative.
-# Do not treat a passing check as compliant until the placeholder is confirmed.
+# SIGN-OFF: these checks are drafted from the policy doc and must be reviewed by
+# the compliance team against the cited policy_ref before verdicts are relied on.
+# Where a rule cannot be judged from the ad content itself (AMC written sign-off,
+# T-7/T-5/T-3 timelines, "data as of month-end", scheme-age rules), it is NOT a
+# check here — see docs/manual-compliance-checklist.md.
 #
 # Fields:
 #   id                    unique check identifier
 #   description           human-readable purpose
 #   surface               visual | audio | both   (where evidence is read)
 #   severity              serious | normal         (serious miss = regulatory event)
-#   applies_when          always | performance_shown | <named condition>
-#   required_text         exact text the check looks for (PLACEHOLDER wording)
-#   min_on_screen_seconds dwell-time requirement (PLACEHOLDER)
-#   policy_ref            clause to confirm
-#   pass_criteria         plain-language definition of a pass
-#   notes                 optional extra hints for the reasoning prompt
+#   applies_when          always | performance_shown | future_returns_shown
+#   method                text | vision
+#   vision_expect         present | absent  (vision only: absent => presence is a violation)
+#   required_text         exact text the check looks for
+#   min_on_screen_seconds dwell-time requirement (audio-visual only)
+#   policy_ref            clause in the May 2026 guidelines
+#   pass_criteria         plain-language definition of a pass (states its own applicability)
+#   notes                 extra hints for the reasoning prompt (e.g. banned phrases)
 # =============================================================================
 
-- id: mf_standard_warning_present
-  description: "Standard market-risk warning text is present on screen."
+# --------------------------------------------------------------------------- #
+# Global — apply to every advertisement (scheme & non-scheme)                  #
+# --------------------------------------------------------------------------- #
+- id: mf_global_disclaimer_present
+  description: "The mandatory global disclaimer (SFPL + AMFI ARN + market-risk warning) is present."
   surface: visual
   severity: serious
   applies_when: always
-  # PLACEHOLDER wording — confirm exact AMFI/SEBI-mandated string & casing.
-  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
-  min_on_screen_seconds: 5      # PLACEHOLDER — confirm against current AMFI/SEBI code
-  policy_ref: "AMFI Code / SEBI Ad guidelines — confirm clause"
-  pass_criteria: "Required text appears, legible, for at least min_on_screen_seconds."
-
-- id: mf_standard_warning_voiced
-  description: "Standard market-risk warning is spoken in the audio voice-over."
-  surface: audio
-  severity: serious
-  applies_when: always
-  # PLACEHOLDER wording — voiced version may differ slightly from on-screen text.
-  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
-  policy_ref: "SEBI Ad guidelines — voice-over of risk warning — confirm clause & required VO pace"
-  pass_criteria: "Required warning is spoken intelligibly at an acceptable pace."
-  notes: "PLACEHOLDER: confirm required VO pace (words/minute or minimum spoken duration)."
-
-- id: mf_warning_duration_and_legibility
-  description: "The market-risk warning is on screen long enough and legible enough to read."
-  surface: visual
-  severity: serious
-  applies_when: always
-  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
-  min_on_screen_seconds: 5      # PLACEHOLDER — confirm
-  policy_ref: "SEBI Ad guidelines — disclaimer legibility & duration — confirm clause"
+  required_text: "Stable Finserv Private Limited, AMFI-registered Mutual Fund Distributor (ARN-269315) Disclaimer: Mutual Fund investments are subject to market risks, read all scheme related documents carefully."
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 — mandatory disclaimer; §5 Global Disclaimer"
   pass_criteria: >-
-    Warning text is present for at least min_on_screen_seconds AND legible
-    (sufficient size/contrast). Low OCR confidence on the warning region => uncertain.
-  notes: "Legibility judged from text-box height ratio and contrast in the visual corpus."
+    The mandatory disclaimer appears on screen, naming Stable Finserv Private
+    Limited as an AMFI-registered MF Distributor (ARN-269315) and carrying the
+    standard market-risk warning. For short text comms where it cannot fit, the
+    website-hyperlink check applies instead.
+  notes: "Mandatory in min font size 12. Exact wording per the guidelines; minor OCR splits across lines are acceptable if the full text is present."
 
-- id: mf_risk_o_meter_present
-  description: "A Riskometer / risk-o-meter graphic is displayed for the scheme."
+- id: mf_disclaimer_legibility
+  description: "The mandatory disclaimer is legible (sufficient size and contrast)."
+  surface: visual
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 — minimum font size 12"
+  pass_criteria: >-
+    The disclaimer text is legible — at least the mandated minimum size (font 12
+    equivalent) and adequate contrast against its background. Low OCR confidence
+    on the disclaimer region => uncertain (never pass).
+  notes: "Legibility judged from text-box height ratio and contrast in the visual corpus; we cannot measure absolute point size, so flag small/low-contrast disclaimers as uncertain or fail."
+
+- id: mf_warning_av_duration_and_voiceover
+  description: "In audio-visual media the market-risk warning is shown AND voiced, clearly, for at least 5 seconds."
+  surface: both
+  severity: serious
+  applies_when: always
+  required_text: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully"
+  min_on_screen_seconds: 5
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 — AV warning, visual + voice-over, >= 5s"
+  pass_criteria: >-
+    For audio-visual content, the standard warning appears on screen AND is
+    reiterated in a clear, understandable voice-over, running for at least
+    min_on_screen_seconds. A single still image or text-only comm has no
+    audio-visual dimension => not applicable.
+  notes: "5 seconds is the confirmed minimum. Still images have no duration/audio => not_applicable."
+
+- id: mf_disclaimer_at_start
+  description: "For video content, the mandatory disclaimer appears at the beginning."
+  surface: visual
+  severity: normal
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §3 — disclaimer at the beginning of every video/content"
+  pass_criteria: >-
+    For video content, the mandatory disclaimer is shown at the start of the
+    video. Not applicable to still images or text comms.
+
+- id: mf_vernacular_warning_language
+  description: "If the ad is in a vernacular language, the warning is in that same language."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 — vernacular warning"
+  pass_criteria: >-
+    If the advertisement is primarily in a vernacular (non-English) language, the
+    standard market-risk warning appears in that same vernacular language. If the
+    ad is in English, not applicable.
+
+- id: mf_comms_website_hyperlink
+  description: "Short comms that cannot carry the full disclaimer include a link to the official website."
+  surface: visual
+  severity: normal
+  applies_when: always
+  required_text: "www.stablemoney.in"
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 — hyperlink where details cannot be included"
+  pass_criteria: >-
+    Where the full mandatory disclaimer cannot be included (e.g. an SMS/WhatsApp
+    comm), a hyperlink to www.stablemoney.in is provided. Applies only to short
+    text comms; for a video/creative that carries the full disclaimer, not applicable.
+
+# --------------------------------------------------------------------------- #
+# Global prohibitions — banned claims, terms and visuals                       #
+# --------------------------------------------------------------------------- #
+- id: mf_no_guaranteed_or_assured_returns
+  description: "No guaranteed, assured, or fixed return language or visuals."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 Don'ts — no guaranteed/assured returns"
+  pass_criteria: "Neither the on-screen text nor the voice-over promises guaranteed, assured, or fixed returns. A violation on EITHER surface fails the check."
+  notes: >-
+    Banned: "Guaranteed Returns", "Assured Returns", "Fixed Returns",
+    "guaranteed wealth creation", "12% returns assured". Permitted alternative:
+    "Market-linked returns" (with risk-o-meter where scheme-specific).
+
+- id: mf_no_risk_free_claims
+  description: "No risk-free or safety claims about mutual fund investments."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §3 Don'ts — no risk-free claims"
+  pass_criteria: "Neither surface claims the investment is risk-free or safe."
+  notes: >-
+    Banned: "Risk-free investment", "Safe MF", "Zero Risk Fund", "Zero Risk",
+    "100% safe". Permitted alternative: the scheme's risk-o-meter classification
+    (Low / Moderate / High etc.).
+
+- id: mf_no_sebi_endorsement_claim
+  description: "SFPL is not described as SEBI Registered/Regulated/Approved."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §3 — banned terms table"
+  pass_criteria: >-
+    SFPL / Stable Money is NOT referred to as "SEBI Registered", "SEBI Regulated",
+    "SEBI Regulated Platform", or "SEBI Approved". The only correct reference is
+    "AMFI Registered Mutual Fund Distributor" with ARN-269315. (Referring to the
+    mutual funds themselves as "SEBI-Regulated Mutual Funds" is acceptable.)
+  notes: 'Banned re SFPL: "SEBI regulated", "SEBI Registered", "SEBI Approved Scheme". Correct: "AMFI Registered Mutual Fund Distributor (ARN-269315)".'
+
+- id: mf_no_alluring_or_inducing_phrases
+  description: "No alluring phrases, false urgency, or 'multiply your money' language."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §3 Don'ts + banned terms table"
+  pass_criteria: "No alluring phrasing, no phrases creating false urgency, and no language implying wealth multiplication or assured outperformance, on either surface."
+  notes: >-
+    Banned: "attractive returns", "lucrative scheme", "wealth multiplier",
+    "Double your money", "Double your money in X years", "Beat inflation with MFs",
+    "Inflation-proof returns", and any false-urgency inducement (incl. in SIP ads).
+
+- id: mf_no_superlatives_rankings_testimonials
+  description: "No superlative/ranking claims and no testimonials."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 Don'ts — no testimonials or rankings; banned terms table"
+  pass_criteria: >-
+    No superlative or ranking claims (e.g. "No. 1", "best-performing fund",
+    "top SIP", "highest returns") and no testimonials of any kind. Under the 2026
+    policy these are prohibited outright (citing a source does NOT cure them).
+  notes: 'Banned: "Highest Returns", "Best-performing fund", "Top SIP", "No. 1", "#1". Use "Historical CAGR" with applicable disclosures instead.'
+
+- id: mf_no_misleading_projections
+  description: "No false, misleading, or deceptive statements based on assumptions/projections."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 Don'ts — no false/misleading/deceptive statements"
+  pass_criteria: >-
+    No statements that are false, misleading, biased, deceptive, or based on
+    unfounded assumptions/projections. Legitimate AMFI-prescribed illustrations
+    (see the future-returns checks) are not violations.
+  notes: 'Example violation: "start an SIP of just Rs.5,000 a month and watch it grow to Rs.1 crore by retirement".'
+
+- id: mf_no_unfair_comparisons
+  description: "No comparisons that discredit other schemes or are unfair."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 Don'ts — no unfair comparisons"
+  pass_criteria: "No comparison that directly or indirectly discredits other MF schemes or makes an unfair comparison."
+
+- id: mf_no_promotional_games
+  description: "No association with games/contests that incentivize transactional behaviour."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §3 Don'ts — no promotional games/schemes"
+  pass_criteria: "No association with promotional games, competitions, or schemes that incentivize investment/transactional activity."
+
+- id: mf_no_unauthorized_logos
+  description: "No SEBI / Stock Exchange / AMFI logos, and no unauthorised AMC/scheme branding."
   surface: visual
   severity: serious
   applies_when: always
   method: vision
-  policy_ref: "SEBI Riskometer circular — confirm clause & display requirements"
-  pass_criteria: "A Riskometer graphic depicting the scheme's risk level is visibly present."
-  notes: "Perception check — answered via the vision API on sampled frames, not text matching."
-
-- id: mf_no_guaranteed_or_assured_returns
-  description: "No claim of guaranteed, assured, or risk-free returns (spoken or on screen)."
-  surface: both
-  severity: serious
-  applies_when: always
-  policy_ref: "SEBI Ad guidelines — prohibition on assured/guaranteed returns — confirm clause"
-  pass_criteria: "Neither the transcript nor the on-screen text promises guaranteed/assured/risk-free returns."
-  notes: >-
-    PLACEHOLDER banned phrasings (confirm/expand): "guaranteed returns",
-    "assured returns", "risk-free", "guaranteed 9%", "double your money",
-    "fixed returns". A violation on EITHER surface fails the check.
-
-- id: mf_no_specific_return_promise_without_basis
-  description: "No specific/forward return figure promised without a stated, valid basis."
-  surface: both
-  severity: serious
-  applies_when: always
-  policy_ref: "SEBI Ad guidelines — forward-looking return projections — confirm clause"
+  vision_expect: absent
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 Don'ts — no SEBI/Exchange/AMFI logos; AMC logos only as authorised"
   pass_criteria: >-
-    Any specific future return figure (e.g. "expect 15% p.a.") must carry a
-    legitimate, clearly stated basis; an unbacked promise is a violation on
-    either surface.
-  notes: "Distinguish factual past-performance disclosure (see performance check) from forward promises."
+    No SEBI, Stock Exchange, or AMFI logo appears, and no AMC logo / scheme
+    branding beyond what the AMC has explicitly authorised. The presence of a
+    regulator/exchange/AMFI logo is a violation.
+  notes: "Vision check. AMC-logo authorisation cannot be verified from the creative alone — if an AMC logo is seen, flag uncertain for human confirmation of the sign-off."
 
-- id: mf_past_performance_format_and_caveat
-  description: "If past performance is shown, it follows the prescribed format and carries the 'past performance may not be sustained' caveat."
-  surface: both
-  severity: normal
-  applies_when: performance_shown
-  # PLACEHOLDER caveat wording — confirm exact mandated text.
-  required_text: "Past performance may or may not be sustained in future"
-  policy_ref: "SEBI Ad guidelines — past performance presentation — confirm clause, format & period"
-  pass_criteria: >-
-    When performance figures appear, the prescribed caveat is present (spoken or
-    on screen) and the format/period requirements are met.
-  notes: "Only evaluated when performance figures are detected in either surface."
-
-- id: mf_superlatives_have_source_and_date
-  description: "Superlative or ranking claims (e.g. 'No. 1 fund', 'best performing') cite a source and date."
-  surface: both
-  severity: normal
-  applies_when: always
-  policy_ref: "SEBI Ad guidelines — substantiation of superlative claims — confirm clause"
-  pass_criteria: "Every superlative/ranking claim is accompanied by an attributable source and as-of date."
-  notes: 'PLACEHOLDER trigger terms (confirm/expand): "No. 1", "best", "top", "highest", "#1", "leading".'
-
-- id: mf_scheme_and_amc_disclosed
-  description: "The scheme name and the AMC / mutual fund house are clearly disclosed on screen."
+- id: mf_no_exaggerated_visual_hierarchy
+  description: "No oversized/glorified visual treatment that overstates returns or understates risk."
   surface: visual
   severity: normal
   applies_when: always
-  policy_ref: "AMFI Code — identification of scheme & AMC — confirm clause"
-  pass_criteria: "Both the scheme name and the AMC/fund-house name are legibly shown."
+  method: vision
+  vision_expect: absent
+  policy_ref: "MF Ad Guidelines 2026 §2/§3 Don'ts — exaggerated slogans/visual hierarchy"
+  pass_criteria: >-
+    No oversized fonts, emphasis treatments (bold/colour/glow/animation),
+    pictorial flourishes (crowns, trophies, upward-sloping charts), or visual
+    hierarchy that overstates returns or understates risk. Such treatment is a violation.
+
+# --------------------------------------------------------------------------- #
+# Scheme-specific (incl. performance presentation)                             #
+# --------------------------------------------------------------------------- #
+- id: mf_risk_o_meter_present
+  description: "For a scheme-specific ad, the scheme's risk-o-meter and risk classification are shown."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: vision
+  vision_expect: present
+  policy_ref: "MF Ad Guidelines 2026 §2 — latest risk-o-meter with risk classification"
+  pass_criteria: >-
+    If the ad references a specific scheme, the latest AMC risk-o-meter is
+    displayed with its risk classification (e.g. "Very High Risk") clearly visible.
+    If the ad is non-scheme-specific (no scheme referenced), not applicable.
+  notes: "Vision perception. 'Latest / month-end data' cannot be verified from the creative — judge presence + a visible risk classification only."
+
+- id: mf_cagr_all_four_periods
+  description: "Scheme performance is shown as CAGR for 1Y, 3Y, 5Y and since inception (all four)."
+  surface: both
+  severity: serious
+  applies_when: performance_shown
+  policy_ref: "MF Ad Guidelines 2026 §2 — Advertising Scheme Performance (i)"
+  pass_criteria: >-
+    When scheme performance is shown, CAGR is disclosed for ALL FOUR mandatory
+    periods: 1 year, 3 years, 5 years, and since inception. Showing only some
+    periods (e.g. only 1Y or only 3Y) is a violation.
+  notes: "All four periods are mandatory; cherry-picking the strongest period is prohibited."
+
+- id: mf_point_to_point_on_10k
+  description: "Point-to-point returns on a Rs.10,000 investment are shown alongside CAGR."
+  surface: both
+  severity: normal
+  applies_when: performance_shown
+  policy_ref: "MF Ad Guidelines 2026 §2 — Advertising Scheme Performance (ii)"
+  pass_criteria: "When scheme performance is shown, point-to-point returns on a standard Rs.10,000 investment accompany the CAGR figures."
+
+- id: mf_regular_vs_direct_plan
+  description: "Performance states Regular vs Direct plan with an expense-structure footnote."
+  surface: both
+  severity: normal
+  applies_when: performance_shown
+  policy_ref: "MF Ad Guidelines 2026 §2 — Advertising Scheme Performance (iii)"
+  pass_criteria: >-
+    When performance is shown, the ad specifies whether it is the Regular Plan or
+    Direct Plan, with a footnote noting different plans have different expense
+    structures and therefore different returns.
+  notes: 'Language: "Returns are of the Regular Plan - Growth Option. Direct Plan returns differ on account of a different expense structure."'
+
+- id: mf_additional_benchmark_shown
+  description: "The prescribed additional benchmark is shown in INR and CAGR terms."
+  surface: both
+  severity: normal
+  applies_when: performance_shown
+  policy_ref: "MF Ad Guidelines 2026 §2 — Advertising Scheme Performance (v); Para 14.2.4 MF Master Circular"
+  pass_criteria: >-
+    When scheme performance is shown, the additional benchmark prescribed under
+    Para 14.2.4 (e.g. Sensex/Nifty for equity, 10-year G-Sec for longer-duration
+    debt, Domestic Gold Price for gold/silver) is shown in INR and CAGR terms.
+
+- id: mf_past_performance_caveat
+  description: "Past-performance disclosures carry the mandatory caveat."
+  surface: both
+  severity: serious
+  applies_when: performance_shown
+  required_text: "Past performance may or may not be sustained in future and is not a guarantee of any future returns"
+  policy_ref: "MF Ad Guidelines 2026 §2 — Advertising Scheme Performance (viii); §5"
+  pass_criteria: "When past performance is shown, the mandatory caveat appears (on screen or voiced)."
+
+- id: mf_no_indicative_portfolio_or_yield
+  description: "No indicative portfolios or indicative yields for any scheme."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2 Don'ts — no indicative portfolios/yields"
+  pass_criteria: "No indicative portfolios or indicative yields are communicated; only historical/past performance in the permitted format."
+
+- id: mf_fund_manager_change_footnote
+  description: "A fund-manager change during the performance period is disclosed in a footnote."
+  surface: both
+  severity: normal
+  applies_when: performance_shown
+  policy_ref: "MF Ad Guidelines 2026 §2 — Advertising Scheme Performance (vi)"
+  pass_criteria: >-
+    If the scheme was not managed by the same fund manager for the full period of
+    the performance shown, a footnote discloses this. This usually cannot be
+    confirmed from the creative alone — return uncertain unless clearly present/absent.
+
+- id: mf_scheme_and_amc_disclosed
+  description: "Scheme name and AMC are disclosed, with the representation/not-a-recommendation note."
+  surface: visual
+  severity: normal
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §2 / §5 — scheme identification disclaimer"
+  pass_criteria: >-
+    For a scheme-specific ad, the scheme name and AMC/fund house are clearly shown,
+    and a scheme-name reference carries "The scheme referred to is shown for
+    representation purposes only. This is not a recommendation." Non-scheme ads => not applicable.
+
+# --------------------------------------------------------------------------- #
+# Non-scheme-specific — future-return illustrations & content disclaimers      #
+# --------------------------------------------------------------------------- #
+- id: mf_future_returns_use_amfi_cagr
+  description: "Illustrated future returns use the AMFI-prescribed CAGR and cite the circular."
+  surface: both
+  severity: serious
+  applies_when: future_returns_shown
+  policy_ref: "MF Ad Guidelines 2026 §3 — Future Returns in Non-Scheme Materials"
+  pass_criteria: >-
+    Where future returns are illustrated on assumptions, the AMFI-prescribed CAGR
+    is used (currently 8.84% for Gold) AND the assumed CAGR + the AMFI circular
+    relied upon are cited as a footnote.
+  notes: "AMFI Best Practice Guidelines Circular No. 135/BP/109-A/2023-24; 8.84% for Gold; benchmark = Domestic Price of Gold."
+
+- id: mf_sip_illustration_disclaimer
+  description: "SIP illustrations use Rs.10,000/month + AMFI CAGR and carry the SIP disclaimer."
+  surface: both
+  severity: normal
+  applies_when: future_returns_shown
+  policy_ref: "MF Ad Guidelines 2026 §3 / §5 — SIP Illustrations"
+  pass_criteria: >-
+    When a SIP illustration is shown, it is based on Rs.10,000 invested monthly and
+    the AMFI-prescribed assumed CAGR, and carries the SIP illustration disclaimer.
+    If no SIP illustration is present, not applicable.
+  notes: 'Disclaimer: "The SIP illustration is based on an assumed monthly investment of Rs. 10,000 and an assumed CAGR of [_%], for illustrative purposes only. Actual SIP returns will vary..."'
+
+- id: mf_educational_content_disclaimer
+  description: "Educational content carries the educational-purposes disclaimer."
+  surface: both
+  severity: normal
+  applies_when: always
+  required_text: "This content is for educational purposes only and does not constitute investment advice or a recommendation."
+  policy_ref: "MF Ad Guidelines 2026 §3 / §5 — educational content"
+  pass_criteria: >-
+    If the content is purely educational, it carries the educational-purposes
+    disclaimer. If the content is not educational, not applicable.
+
+- id: mf_chart_representation_disclaimer
+  description: "Charts/illustrations have a verified source or a 'for representation' disclaimer."
+  surface: visual
+  severity: normal
+  applies_when: always
+  policy_ref: "MF Ad Guidelines 2026 §3 / §5 — charts/illustrations"
+  pass_criteria: >-
+    Any chart, illustration, or pictorial representation has a verified cited source
+    OR carries "Image / chart is solely for representation purposes." If no
+    chart/illustration is present, not applicable.
+
+# --------------------------------------------------------------------------- #
+# Celebrity                                                                    #
+# --------------------------------------------------------------------------- #
+- id: mf_no_celebrity_endorsement
+  description: "No celebrity or recognisable public figure features in the mutual-fund ad."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: vision
+  vision_expect: absent
+  policy_ref: "MF Ad Guidelines 2026 §4 — SEBI Sixth Schedule clause (e); Para 11.9.5 MF Master Circular"
+  pass_criteria: >-
+    No celebrity or recognisable public figure (film/sports personality, public
+    figure, social-media personality, or anyone with a large following lending
+    their identity) features in the ad. Celebrity endorsement is prohibited for
+    SFPL as a mutual-fund distributor; presence is a violation.
+  notes: "Permitted only for industry-level AMFI 'Mutual Funds Sahi Hai' campaigns (not SFPL). Generic brand promotion that does not promote MFs is outside MF-review scope."

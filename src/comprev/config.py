@@ -73,12 +73,23 @@ class FusionConfig(BaseModel):
     max_parallel_checks: int = 9
 
 
+class PolicyConfig(BaseModel):
+    """Identifies the active policy a review is judged under (stamped on reports)."""
+
+    name: str = "Mutual Funds"
+    version: str = "unspecified"
+    effective_date: Optional[str] = None
+    # Source policy document, relative to the repo root (for audit / download).
+    source_file: Optional[str] = None
+
+
 class EngineConfig(BaseModel):
     model: str = "claude-opus-4-8"
     max_tokens: int = 2048
     visual: VisualConfig = Field(default_factory=VisualConfig)
     audio: AudioConfig = Field(default_factory=AudioConfig)
     fusion: FusionConfig = Field(default_factory=FusionConfig)
+    policy: PolicyConfig = Field(default_factory=PolicyConfig)
 
 
 # --------------------------------------------------------------------------- #
@@ -91,6 +102,17 @@ def load_engine_config(path: Path | str | None = None) -> EngineConfig:
         return EngineConfig()
     data = yaml.safe_load(path.read_text()) or {}
     return EngineConfig.model_validate(data)
+
+
+def checks_hash(path: Path | str | None = None) -> str:
+    """Short content hash of the check library — stamped on reports so a verdict
+    is traceable to the exact rules that produced it."""
+    import hashlib
+
+    path = Path(path) if path else DEFAULT_CHECKS_PATH
+    if not path.exists():
+        return "unknown"
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
 def load_checks(path: Path | str | None = None) -> list[Check]:

@@ -1,0 +1,127 @@
+
+Advertisement Guidelines - Mutual Funds
+May 2026
+These guidelines apply to all advertisements, marketing communications, and promotional materials issued by Stable Finserv Private Limited ("SFPL"), an AMFI Registered Mutual Fund Distributor (ARN - 269315) in respect of its Mutual Fund distribution business on the Stable Money Mobile Application and Social Media Platforms/ Messengers. All advertisements must comply with the SEBI (Mutual Funds) Regulations, 1996 (in particular, the Advertisement Code under the Sixth Schedule), the SEBI Master Circular for Mutual Funds, and all applicable AMFI Circulars and Guidelines. 
+	•	Advertisement Categories
+For the purposes of compliance review and applicable disclaimers, every advertisement issued in connection with the Mutual Fund distribution business shall fall into one of the following three categories. The applicable guidelines and timelines are summarised in the table below; detailed guidelines for each category are set out under (2), (3) and (4) respectively.
+Category
+Description
+Timelines for Internal Compliance Review
+Scheme-Specific Advertisements
+Advertisements that mention, refer to, depict, or relate to any specific Mutual Fund scheme (including specific scheme name, AMC name, scheme performance, portfolio holdings, fund manager, ratings or risk-o-meter of a specific scheme).  Guidelines on issuance of scheme-specific advertisements can be found under (2).
+Videos: T-7 days Creatives: T-5 days Comms: T-3 days
+ All scheme-specific Ads must, in addition to internal compliance review, additionally be cleared with the concerned AMC in writing prior to publication.
+Non-Scheme-Specific Advertisements
+Advertisements that promote Mutual Funds as a product category or the SFPL distribution platform generally, without reference to any specific scheme, AMC, or scheme performance. 
+
+Includes general MF awareness content, SIP awareness Ads, educational content, and platform-promotion Ads.  Guidelines on issuance of non-scheme-specific advertisements can be found under (3).
+Videos: T-7 days Creatives: T-5 days Comms: T-3 days
+ Internal compliance team review and sign-off required; AMC clearance not required for these.
+Advertisements with Celebrities
+Advertisements which feature a "celebrity" (i.e., person with +1M following on any social media account, a film actor, sports person, public figure, social media personality, or any person who is recognisable to the public at large and lends their identity to the Ad).  Guidelines on issuance of advertisements with celebrities can be found under (4).
+Permitted ONLY at industry level (i.e., AMFI-led "Mutual Funds Sahi Hai" type campaigns).  NOT permitted for SFPL as a mutual fund distributor under any circumstances. Refer to (4) for the full rationale.
+
+	•	Guidelines | Scheme-Specific Advertisements
+A scheme-specific advertisement is any Ad that references a specific Mutual Fund scheme by name, depicts the past performance of a specific scheme, references its NAV, AUM, fund manager, portfolio, risk-o-meter, ratings, IDCW, or otherwise allows the viewer to identify the scheme being promoted. 
+Dos: 
+Obtain prior written sign-off from the concerned AMC for use of their scheme name / logo / performance data / factsheet content. The Ad must conform to any restrictions imposed by the AMC at the time of sign-off, and the sign-off email must be retained on record.
+All advertisements shall mandatorily include (in minimum font size 12): “Stable Finserv Private Limited, AMFI-registered Mutual Fund Distributor (ARN-269315) Disclaimer: Mutual Fund investments are subject to market risks, read all scheme related documents carefully.”
+In audio-visual media, the standard warning (Mutual Fund investments are subject to market risks, read all scheme related documents carefully) in visual and accompanying voice-over reiteration shall be audible in a clear and understandable manner, running for at least 5 seconds. 
+Advertisements in vernacular languages shall contain the standard warning in the same vernacular language. 
+Where the above details cannot be included (such as in an SMS/WhatsApp comm), a hyperlink to the official website i.e., www.stablemoney.in must be provided, since the website contains all these particulars.
+All advertisements shall be accurate, true, fair, clear, complete, unambiguous and concise. All factual claims, statistics, and representations in an advertisement must be backed by data from a credible, recent, and verifiable source (AMC factsheets, AMFI publications, SEBI/RBI circulars, or recognized industry bodies), and the source must be clearly cited in the Ad such that the same can be verified from that citing.
+Advertising Scheme Performance: 
+	•	Disclose scheme performance only in terms of CAGR for the past 1 year, 3 years, 5 years and since inception. For example, showing only 1Y or only 3Y returns because they look strongest is not permitted. All four periods are mandatory.
+	•	Provision of point-to-point returns on a standard investment of Rs. 10,000/- alongside CAGR is mandatory (this investment amount has been specified by SEBI). 
+	•	Specifically mention whether the performance disclosed is of the Regular Plan or Direct Plan of the scheme, with a footnote stating that different plans have different expense structures and consequently different returns. Language that may be used: “Returns are of the Regular Plan - Growth Option. Direct Plan returns differ on account of a different expense structure.”
+	•	Where the scheme has been in existence for less than six months, past performance shall NOT be provided. If the scheme has been in existence for more than six months but less than one-year, simple annualized growth rate (not CAGR) for the past 6 months and since inception shall be provided in line with point (ii) and (iii) above.
+	•	Where the scheme is being referenced, the additional benchmark prescribed under Para 14.2.4 of the MF Master Circular (e.g., Sensex/Nifty for equity funds, 10-year G-Sec for debt funds with duration > 1 year, etc) shall also be shown in INR and CAGR terms. The additional benchmark for Gold and Silver funds are not particularly provided, the Benchmark of Domestic Gold Price may be used. 
+	•	If the scheme has not been managed by the same fund manager for the full period of the information being published, this shall be disclosed in a footnote.
+	•	Use the latest AMC-published risk-o-meter for the scheme. The risk-o-meter shall reflect data as of the last day of the previous month-end, and the corresponding risk classification (e.g., "Very High Risk") must be clearly visible.
+	•	For all data in the Ad, the cutoff shall always be the last day of the month-end preceding the Ad's release. For instance, if the Ad is being released in June 2026, the data in the Ad shall be as on May 31st, 2026. 
+	•	All Ads showing past performance shall have the mandatory disclaimer “Past performance may or may not be sustained in future and is not a guarantee of any future returns.”
+
+Don’ts:
+No indicative portfolios or indicative yields shall be communicated for any MF scheme. Only historical and past performance may be shown the in permitted format. 
+No testimonials or rankings based on any criteria. 
+No statements which are false, misleading, biased or deceptive, based on assumption or projections. For example, “start an SIP of just ₹5,000 a month and watch it grow to ₹1 crore by retirement”
+No slogan that is exaggerated, unwarranted, or inconsistent with the risk and return profile of the scheme. This includes oversized fonts, emphasis treatments (bold, color, glow, animation), pictorial flourishes (crowns, trophies, upward-sloping charts) and any visual hierarchy that overstates returns or understates risk.
+No comparison that directly or indirectly discredits other MF schemes or makes unfair comparisons. 
+No guaranteed or assured return language/visuals. 
+No use of AMC logos or SEBI Logo or scheme branding outside what the AMC has explicitly authorised in its sign-off.
+	•	Guidelines | Non-Scheme-Specific Advertisements
+Non-scheme-specific advertisements promote Mutual Funds as a financial product category, promote the SFPL distribution platform, or share educational content - without referencing any specific scheme, AMC, fund manager, scheme performance, NAV, AUM or related particulars. 
+What we must do:
+All advertisements shall mandatorily include (in minimum font size 12): “Stable Finserv Private Limited, AMFI-registered Mutual Fund Distributor (ARN-269315) Disclaimer: Mutual Fund investments are subject to market risks, read all scheme related documents carefully.”
+All advertisements shall include the above mandatory information at the beginning of every video/content published.
+In audio-visual media, the standard warning (Mutual Fund investments are subject to market risks, read all scheme related documents carefully) in visual and accompanying voice-over reiteration shall be audible in a clear and understandable manner, running for at least 5 seconds. 
+Advertisements in vernacular languages shall contain the standard warning in the same vernacular language. 
+Where the above details cannot be included (such as in an SMS/WhatsApp comm), a hyperlink to the official website i.e., www.stablemoney.in must be provided, since the website contains all these particulars.
+All advertisements shall be accurate, true, fair, clear, complete, unambiguous and concise.
+Advertisements on Future Returns in Non-Scheme Materials:
+	•	Where future returns are illustrated based on assumptions/presumptions, use the CAGR values prescribed by AMFI. Current prescribed value being 8.84% for Gold (as per AMFI Best Practice Guidelines Circular No. 135/BP/ 109-A /2023-24) and Benchmark being Domestic Price of Gold.
+	•	The CAGR values used and the AMFI circular relied upon must be cited as a footnote in the advertisement. Language that may be used: “Assumed CAGR of [X]% is the mean of 10-year rolling returns of [Benchmark] between 01/06/2014 and 31/05/2024, as prescribed under AMFI Best Practice Guidelines Circular No. 135/BP/ 109-A /2023-24.”
+	•	For SIP-related illustrations, return calculations shall be based on Rs. 10,000 invested every month. The illustrative CAGR used must be the AMFI-prescribed value. Current prescribed value being 8.84% for Gold (as per AMFI Best Practice Guidelines Circular No. 135/BP/ 109-A /2023-24).
+For purely educational content, include the disclaimer: “This content is for educational purposes only and does not constitute investment advice or a recommendation.”
+Charts/illustrations/pictorial representation must have a verified source or must be accompanied by disclaimer: “Image is solely for representation purposes.”
+ 
+What we must not do:
+No reference to a specific scheme, AMC, scheme performance, NAV, AUM, fund manager, or any data point that would allow identification of a particular Mutual Fund scheme. If any such reference becomes necessary, the Ad is classified as scheme-specific and must follow Section (2).
+No guaranteed or assured returns. For example, "12% returns assured", "guaranteed wealth creation".
+No risk-free claims. For example, phrases like "safe MF investment", "zero risk".
+No testimonials or rankings based on any criteria. 
+No statements which are false, misleading, biased or deceptive, based on assumption or projections. For example, “start an SIP of just ₹5,000 a month and watch it grow to ₹1 crore by retirement”
+No slogan that is exaggerated, unwarranted, or inconsistent with the risk and return profile of the scheme. This includes oversized fonts, emphasis treatments (bold, color, glow, animation), pictorial flourishes (crowns, trophies, upward-sloping charts) and any visual hierarchy that overstates returns or understates risk.
+No comparison that directly or indirectly discredits other MF schemes or makes unfair comparisons. 
+No guaranteed or assured return language/visuals. 
+No usage of SEBI / Stock Exchange / AMFI logos.
+No reference to SFPL as "SEBI Registered", "SEBI Regulated", "SEBI Approved" or similar phrases that indicate regulatory endorsement. The correct reference is "AMFI Registered Mutual Fund Distributor" with the ARN.
+No alluring phrases. For example, "attractive returns", "lucrative scheme", "wealth multiplier".
+No inducing phrases that create false urgency, including in SIP-awareness Ads.
+No association with promotional games/schemes that incentivize transactional behaviour. No competitions/schemes/games that promote investment activity.
+
+Specific terms that cannot be used:
+Do Not Use
+Instead Use
+"SEBI regulated", "SEBI Registered", "SEBI Regulated Platform", "SEBI Approved Scheme"
+In relation to SFPL: "AMFI Registered Mutual Fund Distributor" with ARN
+In relation to MFs on SFPL: “SEBI-Regulated Mutual Funds”
+"Guaranteed Returns", "Assured Returns", "Fixed Returns" 
+"Market-linked returns" (with risk-o-meter where scheme-specific)
+"Highest Returns", "Best-performing fund", "Top SIP"
+"Historical CAGR" with applicable disclosures and timeframe
+"Risk-free investment", "Safe MF", "Zero Risk Fund", “100% safe”
+Use scheme risk-o-meter classification (Low / Moderate / High etc.)
+"Double your money in X years"
+Rephrase. Provide historical CAGR with all mandatory disclosures.
+"Beat inflation with MFs", "Inflation-proof returns"
+Rephrase. Avoid implying assured outperformance.
+	•	Guidelines | Advertisements with Celebrities
+Celebrity endorsements in the Mutual Fund industry are governed by Para 11.9.5 of the SEBI Master Circular on Mutual Funds. The position is restrictive: celebrities may not be used to promote any specific Mutual Fund scheme, any AMC, or any Mutual Fund distributor.
+Regulatory Position:
+Clause (e) of the SEBI Advertisement Code (Sixth Schedule of SEBI (Mutual Funds) Regulations, 1996) expressly states: "No celebrities shall form part of the advertisement."
+A narrow exception is carved out under Para 11.9.5 of the SEBI Master Circular: celebrity endorsements are permitted ONLY at industry level, for the purpose of increasing awareness of Mutual Funds as a financial product category, and ONLY when undertaken collectively by Mutual Funds through AMFI. These industry-level campaigns shall not promote a scheme of a particular Mutual Fund, shall not be used as a branding exercise of any Mutual Fund/AMC, and require prior approval of SEBI.
+Permitted alternatives:
+SFPL may use celebrities in its Ads that are on promotion of the brand and the Stable Money Application in general. These Ads cannot promote SFPL or Stable Money as a Mutual Fund distributor. They are only to be a generic brand promotion on all financial products distributed by SFPL on Stable Money Application i.e., FDs, RDs, MFs, and Secured CC. 
+	•	
+	•	Mandatory Disclaimers Based on Content Type
+Instance / Mentioned Term
+Disclaimer Required
+Global Disclaimer (to be mentioned in every ad)
+“Stable Finserv Private Limited, AMFI-registered Mutual Fund Distributor (ARN-269315) Disclaimer: Mutual Fund investments are subject to market risks, read all scheme related documents carefully.”
+Performance / CAGR disclosures (scheme-specific)
+"Past performance may or may not be sustained in future and is not a guarantee of any future returns. Returns shown are CAGR computed based on month-end data as of [date]. Different plans (Regular vs Direct) have different expense structures and therefore different returns."
+Illustrative Returns / Future Projections (non-scheme-specific)
+“Assumed CAGR of [X]% is the mean of 10-year rolling returns of [Benchmark] between 01/06/2014 and 31/05/2024, as prescribed under AMFI Best Practice Guidelines Circular No. 135/BP/ 109-A /2023-24.”
+SIP Illustrations
+"The SIP illustration is based on an assumed monthly investment of Rs. 10,000 and an assumed CAGR of [_%], for illustrative purposes only. Actual SIP returns will vary depending on the scheme chosen, the period of investment, and prevailing market conditions."
+Specific Scheme Name reference
+"The scheme referred to is shown for representation purposes only. This is not a recommendation.”
+Educational content
+"This content is for educational purposes only and does not constitute investment advice or a recommendation."
+Charts/Illustrations/Pictorial Representation
+"Image / chart is solely for representation purposes."
+Fund Manager performance reference
+"Performance of other schemes managed by the same fund manager is available at [website link]."
+
+

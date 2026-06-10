@@ -39,6 +39,9 @@ def _render_markdown(report: VideoReport) -> str:
         f"- **Overall status:** {emoji} **{report.overall_status.value.upper()}**",
         f"- **Needs human review:** {'yes' if report.needs_human_review else 'no'}",
     ]
+    if report.policy_version:
+        hash_suffix = f" · checks `{report.checks_hash}`" if report.checks_hash else ""
+        lines.append(f"- **Policy:** {report.policy_version}{hash_suffix}")
     if report.review_reasons:
         lines.append("- **Review reasons:**")
         lines.extend(f"  - {r}" for r in report.review_reasons)

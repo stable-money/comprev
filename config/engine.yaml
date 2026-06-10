@@ -48,3 +48,13 @@ audio:
 # --- Fusion (Claude reasoning) -----------------------------------------------
 fusion:
   max_parallel_checks: 9        # run the per-check Claude calls concurrently
+
+# --- Active policy -----------------------------------------------------------
+# The policy these checks operationalize. Stamped (with a checks-file hash) onto
+# every report so a verdict stays traceable after the policy is updated. Bump
+# version/effective_date when a new policy lands (see config/policies/).
+policy:
+  name: "Mutual Funds"
+  version: "May 2026"
+  effective_date: "2026-05-01"
+  source_file: "config/policies/mf-ad-guidelines-2026-05.docx"

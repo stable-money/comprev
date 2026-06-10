@@ -34,6 +34,14 @@ _PERF_PATTERNS = [
     re.compile(r"\b(returns?|cagr|annualou?s?ed|p\.?a\.?|past performance|nav growth|xirr)\b", re.I),
 ]
 
+# Gates `future_returns_shown` checks (illustrative/projected returns, SIP growth).
+_FUTURE_RETURN_PATTERNS = [
+    re.compile(r"\b(projection|projected|illustrat|assumed|expected|estimat|future)\b", re.I),
+    re.compile(r"\bsip\b", re.I),
+    re.compile(r"\b(grow|growth)\s+to\b", re.I),
+    re.compile(r"8\.84\s?%"),
+]
+
 
 def _surfaces_for(check: Check) -> list[str]:
     if check.surface.value == "both":
@@ -68,10 +76,22 @@ def _detect_performance(corpus: VisualCorpus | None, transcript: Transcript | No
     return any(p.search(text) for p in _PERF_PATTERNS)
 
 
+def _detect_future_returns(corpus: VisualCorpus | None, transcript: Transcript | None) -> bool:
+    blobs: list[str] = []
+    if corpus:
+        blobs.extend(a.text for a in corpus.appearances)
+    if transcript:
+        blobs.extend(s.text for s in transcript.segments)
+    text = " \n ".join(blobs)
+    return any(p.search(text) for p in _FUTURE_RETURN_PATTERNS)
+
+
 def _applies(check: Check, corpus, transcript) -> bool:
     cond = check.applies_when
     if cond == "always":
         return True
+    if cond == "future_returns_shown":
+        return _detect_future_returns(corpus, transcript)
     if cond == "performance_shown":
         return _detect_performance(corpus, transcript)
     # PHASE 2: add more named conditions as compliance defines them.
@@ -153,12 +173,15 @@ def _evaluate_vision(check: Check, corpus: VisualCorpus | None, client: ClaudeCl
     findings = [f for f in (res.get("findings", []) or []) if isinstance(f, str)]
     frame_idxs = res.get("frame_indices", []) or []
 
-    if present == "yes":
-        status = CheckStatus.pass_
-    elif present == "no":
-        status = CheckStatus.fail  # element required but absent = violation
-    else:
+    # Polarity: a REQUIRED element passes when present; a PROHIBITED element
+    # (vision_expect="absent", e.g. a celebrity / unauthorised logo) fails when present.
+    prohibited = check.vision_expect == "absent"
+    if present == "unsure":
         status = CheckStatus.uncertain
+    elif present == "yes":
+        status = CheckStatus.fail if prohibited else CheckStatus.pass_
+    else:  # "no"
+        status = CheckStatus.pass_ if prohibited else CheckStatus.fail
 
     evidence = [
         Evidence(

@@ -35,6 +35,9 @@ def route(
     video_id: str,
     duration_seconds: float,
     results: list[CheckResult],
+    policy_version: str | None = None,
+    policy_source: str | None = None,
+    checks_hash: str | None = None,
 ) -> VideoReport:
     """Assemble the final VideoReport from individual check results."""
     results = [enforce_failsafe(r) for r in results]
@@ -62,6 +65,9 @@ def route(
         checks=results,
         needs_human_review=needs_human_review,
         review_reasons=review_reasons,
+        policy_version=policy_version,
+        policy_source=policy_source,
+        checks_hash=checks_hash,
     )
 
 

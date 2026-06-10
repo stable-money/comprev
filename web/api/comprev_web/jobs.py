@@ -55,7 +55,7 @@ def _set(jobs: Any, job_id: str, **changes: Any) -> None:
 # --------------------------------------------------------------------------- #
 def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
              options: dict) -> None:
-    from comprev.config import load_checks, load_engine_config
+    from comprev.config import checks_hash, load_checks, load_engine_config
     from comprev.engine import run_audio, run_image, run_visual, _stub_report
     from comprev.report import write_report
     from comprev.routing import route
@@ -96,7 +96,7 @@ def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
             pass  # preview is best-effort; never fail a run over it
 
         if options.get("stub"):
-            report = _stub_report(video_id, checks)
+            report = _stub_report(video_id, checks, cfg)
             write_report(report, out_root)
             _set(jobs, job_id, stage="done", report_ready=True)
             return
@@ -139,7 +139,12 @@ def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
         )
 
         _set(jobs, job_id, stage="routing")
-        report = route(video_id, duration, results)
+        report = route(
+            video_id, duration, results,
+            policy_version=cfg.policy.version,
+            policy_source=cfg.policy.source_file,
+            checks_hash=checks_hash(),
+        )
         write_report(report, out_root)
         _set(jobs, job_id, stage="done", report_ready=True)
     except Exception as exc:  # noqa: BLE001 — surface any failure as job error

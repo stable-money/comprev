@@ -67,6 +67,9 @@ class Check(BaseModel):
     # reasons via Claude; "vision" sends frames to the Claude vision API for a
     # perception judgment (e.g. "is a Riskometer graphic present").
     method: Literal["text", "vision"] = "text"
+    # For vision checks: is the element REQUIRED (present => pass) or PROHIBITED
+    # (present => fail, e.g. a celebrity or an unauthorised logo)? Ignored for text.
+    vision_expect: Literal["present", "absent"] = "present"
     required_text: Optional[str] = None
     min_on_screen_seconds: Optional[float] = None
     policy_ref: str
@@ -214,6 +217,11 @@ class VideoReport(BaseModel):
     checks: list[CheckResult] = Field(default_factory=list)
     needs_human_review: bool = True
     review_reasons: list[str] = Field(default_factory=list)
+    # The exact policy this verdict was judged under (stamped at routing time so a
+    # report stays defensible after the active policy moves on). None on older reports.
+    policy_version: Optional[str] = None
+    policy_source: Optional[str] = None
+    checks_hash: Optional[str] = None
 
     def model_dump_report(self) -> dict:
         """JSON dump matching the brief's output contract (enum values as strings)."""

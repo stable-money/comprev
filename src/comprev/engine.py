@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from .config import EngineConfig
+from .config import EngineConfig, checks_hash
 from .routing import route
 from .schemas import (
     Check,
@@ -149,7 +149,7 @@ def run_video(
 
     if stub:
         # Scaffold mode: no ML deps, no API. Everything is uncertain (fail-safe).
-        return _stub_report(video_id, checks)
+        return _stub_report(video_id, checks, cfg)
 
     corpus: Optional[VisualCorpus] = None
     transcript: Optional[Transcript] = None
@@ -187,10 +187,19 @@ def run_video(
         max_workers=cfg.fusion.max_parallel_checks,
     )
 
-    return route(video_id, duration, results)
+    return route(
+        video_id, duration, results,
+        policy_version=cfg.policy.version,
+        policy_source=cfg.policy.source_file,
+        checks_hash=checks_hash(),
+    )
 
 
-def _stub_report(video_id: str, checks: list[Check]) -> VideoReport:
+def _stub_report(
+    video_id: str,
+    checks: list[Check],
+    cfg: EngineConfig | None = None,
+) -> VideoReport:
     results = [
         CheckResult(
             check_id=c.id,
@@ -205,4 +214,9 @@ def _stub_report(video_id: str, checks: list[Check]) -> VideoReport:
         )
         for c in checks
     ]
-    return route(video_id, 0.0, results)
+    return route(
+        video_id, 0.0, results,
+        policy_version=cfg.policy.version if cfg else None,
+        policy_source=cfg.policy.source_file if cfg else None,
+        checks_hash=checks_hash() if cfg else None,
+    )

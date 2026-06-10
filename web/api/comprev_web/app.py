@@ -130,6 +130,22 @@ def get_policy_source(name: str) -> str:
     return meta["path"].read_text()
 
 
+@app.get("/api/policy-doc")
+def get_policy_doc() -> FileResponse:
+    """Download the source policy document (the authoritative .docx) for audit."""
+    from comprev.config import load_engine_config
+
+    cfg = load_engine_config()
+    src = cfg.policy.source_file
+    if not src:
+        raise HTTPException(status_code=404, detail="No policy document configured.")
+    # source_file is repo-root-relative; OUT_ROOT is <root>/out.
+    path = jobs.OUT_ROOT.parent / src
+    if not path.exists():
+        raise HTTPException(status_code=404, detail=f"Policy document not found: {src}")
+    return FileResponse(path, filename=path.name)
+
+
 # --------------------------------------------------------------------------- #
 # Reports                                                                      #
 # --------------------------------------------------------------------------- #
