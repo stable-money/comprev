@@ -83,13 +83,26 @@ class PolicyConfig(BaseModel):
     source_file: Optional[str] = None
 
 
+class ProductConfig(BaseModel):
+    """One reviewable product line: its check library + the policy it operationalizes."""
+
+    label: str
+    checks_file: str
+    policy: PolicyConfig = Field(default_factory=PolicyConfig)
+
+
 class EngineConfig(BaseModel):
     model: str = "claude-opus-4-8"
     max_tokens: int = 2048
     visual: VisualConfig = Field(default_factory=VisualConfig)
     audio: AudioConfig = Field(default_factory=AudioConfig)
     fusion: FusionConfig = Field(default_factory=FusionConfig)
+    # Legacy single-product policy (the mutual_funds default). New products live
+    # under ``products`` below; this stays as the fallback for mutual_funds.
     policy: PolicyConfig = Field(default_factory=PolicyConfig)
+    # Product registry: product key -> its checks file + policy. Shared ML/runtime
+    # knobs above are product-agnostic; only checks + policy differ per product.
+    products: dict[str, ProductConfig] = Field(default_factory=dict)
 
 
 # --------------------------------------------------------------------------- #
@@ -102,6 +115,32 @@ def load_engine_config(path: Path | str | None = None) -> EngineConfig:
         return EngineConfig()
     data = yaml.safe_load(path.read_text()) or {}
     return EngineConfig.model_validate(data)
+
+
+def resolve_product(cfg: EngineConfig, product: str) -> ProductConfig:
+    """Resolve a product key to its checks file + policy.
+
+    Prefers the ``products`` registry in engine.yaml. Falls back to the legacy
+    top-level ``policy`` block for ``mutual_funds`` so an older engine.yaml (no
+    ``products``) still works. Unknown products raise.
+    """
+    if product in cfg.products:
+        return cfg.products[product]
+    if product == "mutual_funds":
+        return ProductConfig(
+            label="Mutual Funds",
+            checks_file=str(DEFAULT_CHECKS_PATH.relative_to(_REPO_ROOT)),
+            policy=cfg.policy,
+        )
+    raise ValueError(
+        f"Unknown product: {product!r}. Configure it under 'products' in engine.yaml."
+    )
+
+
+def checks_path_for(pc: ProductConfig) -> Path:
+    """Absolute path to a product's checks file (resolved against the repo root)."""
+    p = Path(pc.checks_file)
+    return p if p.is_absolute() else _REPO_ROOT / p
 
 
 def checks_hash(path: Path | str | None = None) -> str:

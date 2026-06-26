@@ -13,9 +13,9 @@ services:
     dockerContext: .
     region: oregon
     # NOTE: ML backend is memory-heavy (PaddleOCR server detector + faster-whisper
-    # large-v3). 'standard' (2 GB) will likely OOM on a real review — bump to
-    # 'pro' (4 GB) or 'pro plus' (8 GB) before running real (non-stub) reviews.
-    plan: standard
+    # large-v3). 'standard' (2 GB) OOMs on a real review; 'pro' (4 GB) is the
+    # minimum for non-stub reviews — bump to 'pro plus' (8 GB) if it still OOMs.
+    plan: pro
     healthCheckPath: /api/health
     autoDeploy: true
     disk:

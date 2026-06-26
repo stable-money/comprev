@@ -58,3 +58,26 @@ policy:
   version: "May 2026"
   effective_date: "2026-05-01"
   source_file: "config/policies/mf-ad-guidelines-2026-05.docx"
+
+# --- Product registry --------------------------------------------------------
+# Each reviewable product line has its own check library + policy. The ML/runtime
+# knobs above are product-agnostic and shared. The user picks a product at upload
+# (or via `comprev run --product <key>`); the engine loads that product's checks
+# and stamps its policy onto the report.
+products:
+  mutual_funds:
+    label: "Mutual Funds"
+    checks_file: "config/checks_mf.yaml"
+    policy:
+      name: "Mutual Funds"
+      version: "May 2026"
+      effective_date: "2026-05-01"
+      source_file: "config/policies/mf-ad-guidelines-2026-05.docx"
+  bonds:
+    label: "Bonds"
+    checks_file: "config/checks_bonds.yaml"
+    policy:
+      name: "Bonds (OBPP)"
+      version: "Jan 2026"
+      effective_date: "2026-01-01"
+      source_file: "config/policies/bonds-ad-guidelines-2026-01.docx"

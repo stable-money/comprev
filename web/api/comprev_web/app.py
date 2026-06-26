@@ -33,6 +33,10 @@ ALLOWED_EXTENSIONS = {
     "image": {".jpg", ".jpeg", ".png", ".webp", ".bmp"},
     "audio": {".mp3", ".wav", ".m4a", ".aac", ".ogg", ".flac"},
 }
+# Reviewable products (single source of truth lives in comprev.schemas.Product).
+from comprev.schemas import Product  # noqa: E402
+
+ALLOWED_PRODUCTS = {p.value for p in Product}
 MAX_UPLOAD_BYTES = 500 * 1024 * 1024  # 500 MB
 CHUNK = 1024 * 1024
 
@@ -63,43 +67,69 @@ def health() -> Health:
 
 
 @app.get("/api/checks")
-def list_checks() -> list[dict]:
-    from comprev.config import load_checks
+def list_checks(product: str = "mutual_funds") -> list[dict]:
+    from comprev.config import (
+        checks_path_for,
+        load_checks,
+        load_engine_config,
+        resolve_product,
+    )
 
-    return [c.model_dump(mode="json") for c in load_checks()]
+    if product not in ALLOWED_PRODUCTS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown product {product!r}. Expected one of: "
+            + ", ".join(sorted(ALLOWED_PRODUCTS)),
+        )
+    pc = resolve_product(load_engine_config(), product)
+    return [c.model_dump(mode="json") for c in load_checks(checks_path_for(pc))]
 
 
 # --------------------------------------------------------------------------- #
 # Policies (the config files that drive every review)                          #
 # --------------------------------------------------------------------------- #
-def _policy_registry() -> dict[str, dict]:
+def _policy_registry(product: str = "mutual_funds") -> dict[str, dict]:
     """Whitelisted policy source files, keyed by basename.
 
     The map is the only thing that can be read through ``/api/policies/{name}``,
     so there is no path-traversal surface — an arbitrary ``name`` simply 404s.
+    The check library is product-specific; engine.yaml is shared.
     """
-    from comprev.config import DEFAULT_CHECKS_PATH, DEFAULT_ENGINE_PATH
+    from comprev.config import (
+        DEFAULT_ENGINE_PATH,
+        checks_path_for,
+        load_engine_config,
+        resolve_product,
+    )
 
+    pc = resolve_product(load_engine_config(), product)
+    checks_path = checks_path_for(pc)
     return {
-        DEFAULT_CHECKS_PATH.name: {
-            "path": DEFAULT_CHECKS_PATH,
-            "title": "Compliance check library",
-            "description": "The editable library of checks evaluated against every video.",
+        checks_path.name: {
+            "path": checks_path,
+            "title": f"{pc.label} check library",
+            "description": "The editable library of checks evaluated against every upload.",
         },
         DEFAULT_ENGINE_PATH.name: {
             "path": DEFAULT_ENGINE_PATH,
             "title": "Engine configuration",
-            "description": "Runtime knobs — model, sampling, OCR/ASR thresholds.",
+            "description": "Runtime knobs — model, sampling, OCR/ASR thresholds (shared across products).",
         },
     }
 
 
 @app.get("/api/policies")
-def list_policies() -> list[dict]:
+def list_policies(product: str = "mutual_funds") -> list[dict]:
     from comprev.config import load_checks
 
+    if product not in ALLOWED_PRODUCTS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown product {product!r}. Expected one of: "
+            + ", ".join(sorted(ALLOWED_PRODUCTS)),
+        )
     out: list[dict] = []
-    for name, meta in _policy_registry().items():
+    for name, meta in _policy_registry(product).items():
         path: Path = meta["path"]
         if not path.exists():
             continue
@@ -123,20 +153,23 @@ def list_policies() -> list[dict]:
 
 
 @app.get("/api/policies/{name}", response_class=PlainTextResponse)
-def get_policy_source(name: str) -> str:
-    meta = _policy_registry().get(name)
+def get_policy_source(name: str, product: str = "mutual_funds") -> str:
+    if product not in ALLOWED_PRODUCTS:
+        raise HTTPException(status_code=400, detail=f"Unknown product {product!r}.")
+    meta = _policy_registry(product).get(name)
     if meta is None or not meta["path"].exists():
         raise HTTPException(status_code=404, detail=f"Unknown policy file {name!r}")
     return meta["path"].read_text()
 
 
 @app.get("/api/policy-doc")
-def get_policy_doc() -> FileResponse:
+def get_policy_doc(product: str = "mutual_funds") -> FileResponse:
     """Download the source policy document (the authoritative .docx) for audit."""
-    from comprev.config import load_engine_config
+    from comprev.config import load_engine_config, resolve_product
 
-    cfg = load_engine_config()
-    src = cfg.policy.source_file
+    if product not in ALLOWED_PRODUCTS:
+        raise HTTPException(status_code=400, detail=f"Unknown product {product!r}.")
+    src = resolve_product(load_engine_config(), product).policy.source_file
     if not src:
         raise HTTPException(status_code=404, detail="No policy document configured.")
     # source_file is repo-root-relative; OUT_ROOT is <root>/out.
@@ -188,6 +221,7 @@ def list_reports() -> list[ReportSummary]:
                 n_checks=len(data.get("checks", [])),
                 modified_at=path.stat().st_mtime,
                 media_kind=_media_kind(src.suffix) if src else None,
+                product=data.get("product"),
             )
         )
     summaries.sort(key=lambda s: s.modified_at, reverse=True)
@@ -288,6 +322,7 @@ def list_active_jobs() -> list[JobStatus]:
 async def create_job(
     file: UploadFile = File(...),
     kind: str = Form("video"),
+    product: str = Form("mutual_funds"),
     stub: bool = Form(False),
     fast: bool = Form(False),
     overwrite: bool = Form(False),
@@ -296,6 +331,12 @@ async def create_job(
         raise HTTPException(
             status_code=400,
             detail=f"Unknown kind {kind!r}. Expected one of: video, image, audio.",
+        )
+    if product not in ALLOWED_PRODUCTS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown product {product!r}. Expected one of: "
+            + ", ".join(sorted(ALLOWED_PRODUCTS)),
         )
     filename = file.filename or "upload"
     ext = Path(filename).suffix.lower()
@@ -335,6 +376,7 @@ async def create_job(
 
     options = {
         "kind": kind,
+        "product": product,
         "stub": stub,
         "fast": fast,
     }

@@ -26,7 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import type { Health, MediaKind } from "@/lib/api";
+import { PRODUCTS } from "@/lib/api";
+import type { Health, MediaKind, Product } from "@/lib/api";
 
 const KINDS: {
   kind: MediaKind;
@@ -62,6 +63,7 @@ export function UploadDialog() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<MediaKind | null>(null);
+  const [product, setProduct] = useState<Product>("mutual_funds");
   const [file, setFile] = useState<File | null>(null);
   const [stub, setStub] = useState(false);
   const [fast, setFast] = useState(false);
@@ -73,6 +75,7 @@ export function UploadDialog() {
   useEffect(() => {
     if (!open) return;
     setKind(null);
+    setProduct("mutual_funds");
     setFile(null);
     setFast(false);
     setConflict(null);
@@ -97,6 +100,7 @@ export function UploadDialog() {
     const form = new FormData();
     form.append("file", file);
     form.append("kind", kind);
+    form.append("product", product);
     form.append("stub", String(stub));
     form.append("fast", String(fast));
     form.append("overwrite", String(overwrite));
@@ -184,6 +188,30 @@ export function UploadDialog() {
             </DialogHeader>
 
             <div className="grid gap-4 py-2">
+              <div className="grid gap-2">
+                <Label>Product</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {PRODUCTS.map((p) => (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() => setProduct(p.value)}
+                      className={cn(
+                        "rounded-md border p-2 text-sm transition-colors",
+                        product === p.value
+                          ? "border-primary bg-accent font-medium"
+                          : "border-border text-muted-foreground hover:border-primary hover:bg-accent",
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-muted-foreground text-xs">
+                  Which policy set to review against.
+                </p>
+              </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="media">{selected.label} file</Label>
                 <Input

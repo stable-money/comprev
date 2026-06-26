@@ -1,0 +1,547 @@
+# =============================================================================
+# Bonds (OBPP) advertisement compliance check library.
+#
+# Operationalizes: "Advertisement Guidelines — OBPP, Jan 2026"
+# (config/policies/bonds-ad-guidelines-2026-01.docx). The active policy version
+# is declared in config/engine.yaml (products.bonds.policy.*) and stamped onto
+# every report.
+#
+# Editable by non-engineers. One entry per check. Same field schema as
+# config/checks_mf.yaml (see that file's header for full field docs):
+#   id · description · surface (visual|audio|both) · severity (serious|normal)
+#   applies_when (always | named condition) · method (text|vision)
+#   vision_expect (present|absent, vision only) · required_text
+#   min_on_screen_seconds · policy_ref · pass_criteria · notes
+#
+# SIGN-OFF: drafted from the policy doc; must be reviewed by the compliance team
+# against the cited policy_ref before verdicts are relied on.
+#
+# OUT OF SCOPE (cannot be judged from the ad content itself — process/governance,
+# not creative): the T-10/T-9/T-7 filing timelines; the cover-letter / artist-
+# undertaking filing documents; the 180-day reuse window; "used in its entirety"
+# / verbatim-translation provenance; and the marketing-team usage trackers /
+# NSE quarterly-reporting records. These are not checks here.
+#
+# Conditional checks use `applies_when: always` and state their trigger inside
+# `pass_criteria` (e.g. "If no YTM is mentioned, not applicable") — the reasoner
+# returns not-applicable when the trigger is absent. Where a rule needs evidence
+# that is not in the creative (a CA certificate, a verifiable source, issuer
+# consent), the check returns `uncertain` for human confirmation, never `pass`.
+# =============================================================================
+
+# --------------------------------------------------------------------------- #
+# Mandatory disclosures — apply to every advertisement                         #
+# --------------------------------------------------------------------------- #
+- id: bonds_standard_warning_present
+  description: "The mandatory OBPP Standard Warning (global disclaimer) is present; on video it must appear in BOTH audio and visual for >= 8s."
+  surface: both
+  severity: serious
+  applies_when: always
+  method: text
+  required_text: "Fixed returns do not constitute guaranteed or assured returns. Investments in corporate debt securities, municipal debt securities/securitised debt instruments are subject to credit risks, market risks and default risks including delay and/or default in payment. Read all the offer related documents carefully"
+  min_on_screen_seconds: 8
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Global Disclaimer / Standard Warning (Pre-approved & Approved Ads; Mandatory Disclaimers)"
+  pass_criteria: >-
+    The Standard Warning appears on screen and (for audio-visual content) is
+    voiced. The text states that fixed returns are not guaranteed/assured and that
+    investments in corporate/municipal debt / securitised debt are subject to
+    credit, market and default risks (including delay/default in payment), and
+    directs the viewer to read all offer-related documents. For a video it must be
+    present in BOTH the audio AND the on-screen text and remain legible for at
+    least 8 seconds. Close paraphrase of the spoken form and minor OCR splits are
+    acceptable if the full meaning is present. Where the medium cannot carry the
+    full text (e.g. SMS/WhatsApp), the website-hyperlink check applies instead.
+  notes: >-
+    Verbatim on screen (min font size 10 per policy). Regional-language ads carry
+    the warning in that regional language. On a video, if only one surface carries
+    it, that is a violation (both required).
+
+- id: bonds_mandatory_entity_info_present
+  description: "All mandatory entity information is present: OBPP name + logo, SEBI reg numbers (broker + DP), NSE/BSE membership, and registered office address."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: text
+  required_text: "Stable Broking Private Limited INZ000314637 INDP7912025 NSE 90363 BSE 6829"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Pre-approved & Approved Ads mandatory information (a)-(e)"
+  pass_criteria: >-
+    The ad carries the mandatory entity information: OBPP name (Stable Broking
+    Private Limited) and logo; SEBI Stock-Broker registration (INZ000314637); DP
+    SEBI registration (IN-DP-7912025); NSE Member Code 90363 and BSE Member Code
+    6829 (inactive); and the registered office address. For a short comm that
+    cannot carry all of this, the website-hyperlink check applies instead (not a
+    violation here). Missing items on a full creative/video is a violation.
+  notes: >-
+    Reg office: Third floor, Block A, Stable Money, Bhive HSR Premium Campus,
+    Krishna Reddy Industrial Area, Kudlu gate, Bommanahalli, Bangalore, Karnataka,
+    560068. Minor OCR splits across lines are acceptable if the items are present.
+
+- id: bonds_registration_disclosure_at_start
+  description: "For video content, the SEBI-mandated registered name + all registration numbers are disclosed at the beginning."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: text
+  required_text: "SEBI Registered Intermediary Name - Stable Broking Private Limited Stock Broker INZ000314637 NSE Member Code 90363 BSE Member Code 6829 Depository Participant IN-DP-7912025"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — New Advertisements: registration disclosure at the beginning of every video/content"
+  pass_criteria: >-
+    For a video, the start of the content carries the registration disclosure —
+    the registered intermediary name (Stable Broking Private Limited) and ALL
+    registration numbers held: Stock Broker INZ000314637, NSE Member Code 90363,
+    BSE Member Code 6829 (inactive), Depository Participant IN-DP-7912025. For a
+    still image or short comm there is no "beginning of video" => not applicable.
+  notes: "SEBI mandate. Judge presence near the start of the video; exact ordering is not material if all elements appear."
+
+- id: bonds_comms_website_hyperlink
+  description: "Short comms that cannot carry the full disclosures include a link to the official website."
+  surface: visual
+  severity: normal
+  applies_when: always
+  method: text
+  required_text: "www.stablebonds.in"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — hyperlink where details cannot be included (SMS/WhatsApp/Pop-up)"
+  pass_criteria: >-
+    Where the full mandatory information / Standard Warning cannot be included
+    (e.g. an SMS / WhatsApp / pop-up comm), a hyperlink to www.stablebonds.in is
+    provided. Applies only to short comms that cannot carry the full text; for a
+    video/creative that already carries the full disclosures, not applicable.
+
+- id: bonds_vernacular_warning_language
+  description: "If the ad is in a regional (non-English) language, the Standard Warning is in that same language."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — translation: Standard Warning in the respective regional language"
+  pass_criteria: >-
+    If the advertisement is primarily in a regional (non-English) language, the
+    Standard Warning appears in that same regional language. If the ad is in
+    English, not applicable.
+
+# --------------------------------------------------------------------------- #
+# Returns presentation                                                         #
+# --------------------------------------------------------------------------- #
+- id: bonds_returns_have_pa
+  description: "Any percentage of returns is accompanied by 'p.a.'."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — New Advertisements: returns must read e.g. '9-12% p.a.', '11% p.a.'"
+  pass_criteria: >-
+    Every percentage of returns shown or spoken is accompanied by "p.a." (e.g.
+    "9-12% p.a.", "11% p.a."). A returns percentage without "p.a." is a violation.
+    If no returns percentage appears anywhere, not applicable.
+
+- id: bonds_return_range_equal_font_size
+  description: "A numeric return range (e.g. '9-12%') shows both numbers in the same font size."
+  surface: visual
+  severity: normal
+  applies_when: always
+  method: vision
+  vision_expect: absent
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — '9-12%' must have both numbers in the same font size; no pictorial higher returns"
+  pass_criteria: >-
+    A return range such as "9-12%" must show both numbers (9 and 12) in the same
+    font size. A range where one bound (typically the higher number) is enlarged
+    or visually emphasised relative to the other is a violation (vision_expect=
+    absent: the mismatched-size range is the prohibited element). No return range
+    in the creative => not applicable.
+
+- id: bonds_no_pictorial_higher_returns
+  description: "No pictorial representation that glorifies higher returns (crowns, oversized figures, upward flourishes)."
+  surface: visual
+  severity: normal
+  applies_when: always
+  method: vision
+  vision_expect: absent
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no pictorial representation of 'higher returns'"
+  pass_criteria: >-
+    No pictorial device that represents or glorifies higher returns — e.g. a crown
+    on "12%", a return figure rendered far larger than surrounding text, or upward
+    flourishes emphasising the top of a range. Presence of such treatment is a
+    violation.
+
+- id: bonds_no_strike_off_returns
+  description: "No strike-off / crossed-out returns or YTM (e.g. old rate struck through next to a new rate)."
+  surface: visual
+  severity: normal
+  applies_when: always
+  method: vision
+  vision_expect: absent
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no strike-off (use 'Earlier YTM 10% and Present YTM 10.25%')"
+  pass_criteria: >-
+    No struck-through / crossed-out return or YTM figure (e.g. an old rate with a
+    line through it shown beside a new rate). The permitted form spells it out:
+    "Earlier YTM 10% and Present YTM 10.25%". A strike-off treatment is a violation.
+  notes: "Vision check — strike-through is a visual treatment OCR may miss. If a struck figure is seen, it fails; if ambiguous, uncertain."
+
+- id: bonds_interest_amount_needs_context
+  description: "Interest amounts are not shown without the other relevant values (principal, tenure, interest)."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: showing interest amounts without principal/tenure/interest is not allowed"
+  pass_criteria: >-
+    If an interest amount (a rupee payout) is shown, it is accompanied by the other
+    relevant values — principal amount, tenure, and interest rate — so it is not
+    presented in isolation. An interest amount shown alone is a violation. If no
+    interest amount is shown, not applicable.
+
+# --------------------------------------------------------------------------- #
+# Prohibited claims & language (text, both surfaces)                           #
+# --------------------------------------------------------------------------- #
+- id: bonds_no_guaranteed_returns
+  description: "No guaranteed or assured returns language."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no guaranteed returns"
+  pass_criteria: "Neither the on-screen text nor the voice-over promises guaranteed or assured returns. A violation on EITHER surface fails the check."
+  notes: >-
+    Banned: presenting a return as guaranteed/assured, e.g. "12% returns" stated as
+    a promise. Returns must be framed as fixed-but-not-guaranteed with "p.a." and
+    the Standard Warning.
+
+- id: bonds_no_risk_free_or_safety_claims
+  description: "No risk-free or safety claims about bond investments."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no risk-free claims; banned-terms table"
+  pass_criteria: "Neither surface claims the investment is safe, secure, or risk-free. The permitted framing is 'minimal risk'."
+  notes: >-
+    Banned: "safe bonds", "zero risk", "risk-free", "higher security",
+    "Your safe space for stable investments", "Principal stays safe with short
+    term bonds", "Ek safer aur low risk investment option". Use "minimal risk".
+
+- id: bonds_no_superlatives
+  description: "No superlative claims."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no superlatives; banned-terms table"
+  pass_criteria: >-
+    No superlative or ranking claims on either surface. "Highest Returns" must be
+    rephrased to "High Returns"; "India's Bond Booking Platform" is not permitted.
+  notes: 'Banned: "Best", "No. 1", "Largest", "Most trusted", "Leading", "Highest Returns", "India''s Bond Booking Platform".'
+
+- id: bonds_no_misleading_or_exaggerated_claims
+  description: "No misleading claims or exaggerated promises."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no misleading claims / exaggerated promises"
+  pass_criteria: "No misleading claim or exaggerated promise on either surface."
+  notes: 'Banned examples: "best bond", "best for beginners". Any factual claim must also be source-backed (see bonds_facts_backed_by_source).'
+
+- id: bonds_no_alluring_or_inducing_phrases
+  description: "No alluring phrases and no inducing/false-urgency language."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no alluring phrases; no inducing phrases / urgency"
+  pass_criteria: "No alluring phrasing and no language creating a sense of urgency or inducement, on either surface."
+  notes: >-
+    Banned alluring: "attractive returns". Banned urgency/inducement: "last few
+    hours left", "Final hours", "wait too long and you might miss it", "tap to book
+    before the window closes tonight", "few units left", "selling fast",
+    "last few units", "limited units", "invest now".
+
+- id: bonds_no_sebi_association_terms
+  description: "Stable Bonds is not described as SEBI Registered/Regulated, and 'SEBI regulated bonds' / 'SEBI Registered Platform' are not used."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do + banned-terms table: no SEBI-association phrasing"
+  pass_criteria: >-
+    Stable Bonds / the platform is NOT referred to as a "SEBI Registered Broker",
+    "SEBI Registered/Regulated Entity", "SEBI Regulated/Registered Platform", and
+    "SEBI regulated bonds" / "SEBI Registered" are not used. The only correct
+    reference is "SEBI registered broker".
+  notes: 'Banned: "SEBI regulated bonds", "SEBI Registered", "SEBI Regulated Platform", "SEBI Registered Platform", or implying Stable Bonds'' association with SEBI. Correct: "SEBI registered broker".'
+
+- id: bonds_no_derogatory_or_market_comparison
+  description: "No market-player comparison and no derogatory comparison with other instruments (FDs, MFs, equity)."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no market player comparison; no derogatory comparison with FDs/MFs/equity"
+  pass_criteria: >-
+    No comparison with other market players, and no comparison with other financial
+    instruments (FDs, mutual funds, equity) in a derogatory manner. Neutral framing
+    such as "Bonds, like FDs and Mutual Funds, is another investment option" is
+    permitted; "Bonds provide better returns than FDs" is a violation.
+
+- id: bonds_no_passive_income_or_goal_based
+  description: "No passive-income / second-income framing, goal-based creatives, or linking salary/expenses to bond interest."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no passive income / goal-based; do not link salary with interest; banned-terms table"
+  pass_criteria: >-
+    The ad does not present bonds as passive or second income, does not use
+    goal-based framing (e.g. buying a house, going on a vacation), and does not
+    link salary or everyday expenses to bond interest (e.g. paying electricity
+    bills, buying groceries). Any such framing is a violation.
+  notes: 'Banned: "Turning savings into monthly income", second-income / passive-income framing, goal-based creatives, "use interest to pay the electricity bill".'
+
+- id: bonds_no_unsubstantiated_stats
+  description: "No '100% Repayment', 'Zero Default', '% Sold', or investor-count claims unless CA-substantiated."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: '100% Repayment'/'Zero Default'/'% Sold' and investor-count claims need a CA certificate"
+  pass_criteria: >-
+    No use of "100% Repayment", "Zero Default", "% Sold", or data on the number of
+    investors (e.g. "20L+ have invested in Stable Bonds") unless substantiated by a
+    CA certificate. Such substantiation cannot be confirmed from the creative — if
+    any of these claims appears, return uncertain for human confirmation of the CA
+    certificate (never pass); if none appears, not applicable.
+
+- id: bonds_no_incentives_or_promotional_games
+  description: "No incentives for trade and no promotional games/contests/schemes."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no incentives; no promotional games/competitions/schemes"
+  pass_criteria: >-
+    No incentives offered for trading or investing (coupons, gifts, contests,
+    vouchers, certificates, tokens), and no association with promotional games,
+    competitions, or schemes that promote Stable Bonds or trading activity.
+
+- id: bonds_no_repo_rate_speculation
+  description: "No reference to a speculated Repo Rate cut."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no reference to speculated Repo Rate cut"
+  pass_criteria: "Neither surface references a speculated/anticipated Repo Rate cut. If no such reference appears, not applicable."
+
+- id: bonds_no_specific_bond_promotion
+  description: "No promotion of specific bonds or their past returns (outside the permitted disclosure format)."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no promotion of specific bonds, past returns, etc."
+  pass_criteria: >-
+    The ad does not promote specific bonds or tout their past returns. If a
+    specific security is named for information, the specific-security disclaimer
+    applies (see bonds_specific_security_disclaimer). Promotional framing of a
+    specific bond or its past returns is a violation.
+
+- id: bonds_banned_specific_terms
+  description: "None of the doc's expressly banned terms/phrases appear."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — 'Specific terms that cannot be used' table"
+  pass_criteria: >-
+    None of the expressly banned terms/phrases from the policy's terms table appear
+    on either surface. "Monthly Payout" / "Monthly Interest" / "Regular Payout" are
+    permitted ONLY in reference to a specific security that actually offers a
+    monthly payout (and then the monthly-payout disclaimer applies); used
+    generically they are a violation.
+  notes: >-
+    Banned (verbatim): "SEBI regulated bonds", "SEBI Registered", "SEBI Regulated
+    Platform", "SEBI Registered Platform", "Highest Returns", "India's Bond Booking
+    Platform", "Ek safer aur low risk investment option", "Waise hi FD aur Bonds
+    milke ek stable portfolio banate hai", "Your safe space for stable investments",
+    "Turning savings into monthly income", "higher security", "Principal stays safe
+    with short term bonds". Generic "Monthly Payout"/"Regular Payout" not permitted.
+
+# --------------------------------------------------------------------------- #
+# Visual / logos / celebrity                                                   #
+# --------------------------------------------------------------------------- #
+- id: bonds_no_sebi_or_exchange_logos
+  description: "No SEBI / Stock Exchange logos, and no bond-issuer logos without consent."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: vision
+  vision_expect: absent
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — What not to do: no usage of SEBI/Exchange logos; no issuer logos without consent"
+  pass_criteria: >-
+    No SEBI or Stock Exchange (NSE/BSE) logo appears. No bond-issuer logo appears
+    either, unless the issuer has consented — consent cannot be verified from the
+    creative, so if an issuer logo is seen, flag uncertain for human confirmation.
+    A SEBI/Exchange logo is an outright violation.
+  notes: "Vision check. OBPP's own logo is required (see bonds_mandatory_entity_info_present) and is not prohibited here."
+
+- id: bonds_no_celebrity
+  description: "No celebrity name or photo features in the ad."
+  surface: visual
+  severity: serious
+  applies_when: always
+  method: vision
+  vision_expect: absent
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Pre-approved & Approved Ads: cannot feature names/photos of Celebrities"
+  pass_criteria: >-
+    No celebrity or recognisable public figure (film/sports personality, public
+    figure, or social-media personality) features by name or photo. Presence is a
+    violation.
+
+# --------------------------------------------------------------------------- #
+# Content-type conditional disclaimers (Mandatory Disclaimers table)           #
+# --------------------------------------------------------------------------- #
+- id: bonds_ytm_disclaimer
+  description: "If YTM is mentioned, the YTM-calculation disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  required_text: "For detailed calculation of YTM, please visit our website https://stablebonds.in/"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: YTM"
+  pass_criteria: >-
+    If YTM (yield to maturity) is mentioned, the disclaimer "For detailed
+    calculation of YTM, please visit our website https://stablebonds.in/" is
+    present. If YTM is not mentioned, not applicable.
+
+- id: bonds_credit_ratings_disclaimer
+  description: "If credit ratings are mentioned, the ratings-verification disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  required_text: "For further verification of the ratings and details provided, please visit: https://stablebonds.in/"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: Credit Ratings"
+  pass_criteria: >-
+    If credit ratings are mentioned, the disclaimer "For further verification of
+    the ratings and details provided, please visit: https://stablebonds.in/" is
+    present. If no credit rating is mentioned, not applicable.
+
+- id: bonds_specific_security_disclaimer
+  description: "If a specific security is named, the not-a-recommendation disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  required_text: "Securities offered/suggested, this is not a recommendation."
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: Specific Security Name"
+  pass_criteria: >-
+    If a specific security/bond is named, the disclaimer "Securities
+    offered/suggested, this is not a recommendation." is present. If no specific
+    security is named, not applicable.
+
+- id: bonds_fixed_returns_range_disclaimer
+  description: "Wherever 'Fixed Returns' is mentioned, the interest-range disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: Wherever Fixed Returns is mentioned"
+  pass_criteria: >-
+    Wherever "Fixed Returns" is mentioned, a disclaimer of the form "The
+    inventories offered on the platform offer interest ranging from **% to **%
+    fixed returns p.a." is present. If "Fixed Returns" is not mentioned, not
+    applicable.
+
+- id: bonds_monthly_payout_disclaimer
+  description: "If a monthly payout is mentioned, it references a specific security and carries the monthly-payout disclaimer."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: Monthly Payout; banned-terms table"
+  pass_criteria: >-
+    If a monthly payout / monthly interest is mentioned, it is used only in
+    reference to a specific security that offers a monthly payout, and carries the
+    disclaimer that payouts are determined by the type of bond purchased and that
+    this information is available to the investor at the time of selecting the
+    bond. A generic "Monthly Payout"/"Regular Payout" claim, or one without the
+    disclaimer, is a violation. If not mentioned, not applicable.
+
+- id: bonds_sell_anytime_disclaimer
+  description: "If 'sell anytime' / flexi or variable tenure is mentioned, the sell-before-maturity disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: Sell Anytime; flexi/variable tenure"
+  pass_criteria: >-
+    If the ad mentions selling anytime / before maturity, or a flexi/variable
+    tenure, it carries the disclaimer that selling before maturity is executed at
+    prevailing rates subject to availability of a buyer and the prevailing
+    price/interest rate at the time of sell, with a pointer to the detailed YTM
+    calculation. If no such feature is mentioned, not applicable.
+
+- id: bonds_brokerage_disclaimer
+  description: "If brokerage schemes are mentioned, the SEBI-limit disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  required_text: "Brokerage will not exceed SEBI's limit"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — New Advertisements / Mandatory Disclaimers: Brokerage"
+  pass_criteria: >-
+    If brokerage schemes are mentioned, the disclaimer "Brokerage will not exceed
+    SEBI's limit" is present. If brokerage is not mentioned, not applicable.
+
+- id: bonds_third_party_products_disclaimer
+  description: "If third-party products are offered, the third-party-products disclaimer is present."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Mandatory Disclaimers: Advertisement which offers third party products"
+  pass_criteria: >-
+    If the ad offers third-party products, it carries the disclaimer that third-
+    party products are not Exchange-traded products, are not an offering of Stable
+    Broking Pvt. Ltd., and that disputes would not have access to the Exchange
+    investor redressal forum / arbitration. If no third-party product is offered,
+    not applicable.
+
+- id: bonds_chart_representation_disclaimer
+  description: "Charts/illustrations have a verified source or a 'for representation purposes' disclaimer."
+  surface: visual
+  severity: normal
+  applies_when: always
+  required_text: "Image is solely for representation purposes"
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — New Advertisements / Mandatory Disclaimers: charts/illustrations/pictorial representation"
+  pass_criteria: >-
+    Any chart, illustration, or pictorial representation has a verified cited source
+    OR carries "Image is solely for representation purposes." If no
+    chart/illustration is present, not applicable.
+
+- id: bonds_other_business_registration
+  description: "If another business activity (e.g. Mutual Funds) is mentioned, its registration number is stated."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — New Advertisements: mention of other business activity needs the respective registration number"
+  pass_criteria: >-
+    If the ad mentions content pertaining to another business activity (such as
+    Mutual Funds), the respective registration number is stated where applicable.
+    If no other business activity is mentioned, not applicable.
+
+- id: bonds_facts_backed_by_source
+  description: "Factual information (numbers, percentages, statistics, rankings, claims) is backed by a verifiable source."
+  surface: both
+  severity: normal
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — New Advertisements: factual information must be backed by a verifiable source"
+  pass_criteria: >-
+    Any factual information — numbers, percentages, statistics, rankings, or claims
+    — is accompanied by a credible, verifiable source. The source itself cannot be
+    confirmed from the creative, so an unsourced factual claim returns uncertain for
+    human confirmation (never pass). If the ad contains no factual claims, not
+    applicable.
+
+# --------------------------------------------------------------------------- #
+# Educational content                                                          #
+# --------------------------------------------------------------------------- #
+- id: bonds_educational_disclaimer
+  description: "Educational content carries the educational-purposes disclaimer."
+  surface: both
+  severity: normal
+  applies_when: always
+  required_text: "This video is for educational purposes only and does not constitute investment advice or a recommendation."
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Educational Content / Mandatory Disclaimers: Educational Video"
+  pass_criteria: >-
+    If the content is educational, it carries the disclaimer "This video is for
+    educational purposes only and does not constitute investment advice or a
+    recommendation." If the content is not educational, not applicable.
+
+- id: bonds_educational_no_inducement
+  description: "Educational content makes no product-specific claims, no platform redirection, and no inducing statements."
+  surface: both
+  severity: serious
+  applies_when: always
+  policy_ref: "OBPP Ad Guidelines (Jan 2026) — Educational Content: factual only; no product claims; no redirection; no inducement"
+  pass_criteria: >-
+    If the content is educational, it stays factual/informational and makes no
+    product-specific claims (no mention of Stable Bonds' features or offerings), no
+    redirection to the Stable Bonds platform (via link or otherwise), and no
+    inducing statements (e.g. "download stable bonds", "invest now", "stable bonds
+    is the best platform"). Any of these in educational content is a violation. If
+    the content is not educational, not applicable.

@@ -55,7 +55,13 @@ def _set(jobs: Any, job_id: str, **changes: Any) -> None:
 # --------------------------------------------------------------------------- #
 def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
              options: dict) -> None:
-    from comprev.config import checks_hash, load_checks, load_engine_config
+    from comprev.config import (
+        checks_hash,
+        checks_path_for,
+        load_checks,
+        load_engine_config,
+        resolve_product,
+    )
     from comprev.engine import run_audio, run_image, run_visual, _stub_report
     from comprev.report import write_report
     from comprev.routing import route
@@ -64,10 +70,13 @@ def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
     out_root = Path(out_root_str)
     video_id = media_path.stem
     kind = options.get("kind", "video")  # "video" | "image" | "audio"
+    product = options.get("product", "mutual_funds")
 
     try:
-        checks = load_checks()
         cfg = load_engine_config()
+        pc = resolve_product(cfg, product)
+        checks_file = checks_path_for(pc)
+        checks = load_checks(checks_file)
         if options.get("fast"):
             # Speed overrides mirror CLI --fast (lower fidelity).
             cfg.visual.ocr_detection_model = "PP-OCRv5_mobile_det"
@@ -96,7 +105,7 @@ def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
             pass  # preview is best-effort; never fail a run over it
 
         if options.get("stub"):
-            report = _stub_report(video_id, checks, cfg)
+            report = _stub_report(video_id, checks, cfg, product=product)
             write_report(report, out_root)
             _set(jobs, job_id, stage="done", report_ready=True)
             return
@@ -141,9 +150,10 @@ def _run_job(job_id: str, jobs: Any, video_path_str: str, out_root_str: str,
         _set(jobs, job_id, stage="routing")
         report = route(
             video_id, duration, results,
-            policy_version=cfg.policy.version,
-            policy_source=cfg.policy.source_file,
-            checks_hash=checks_hash(),
+            product=product,
+            policy_version=pc.policy.version,
+            policy_source=pc.policy.source_file,
+            checks_hash=checks_hash(checks_file),
         )
         write_report(report, out_root)
         _set(jobs, job_id, stage="done", report_ready=True)
@@ -162,6 +172,7 @@ def submit_job(video_path: Path, options: dict) -> tuple[str, str]:
         "job_id": job_id,
         "video_id": video_id,
         "kind": options.get("kind", "video"),
+        "product": options.get("product", "mutual_funds"),
         "stage": "queued",
         "report_ready": False,
         "error": None,

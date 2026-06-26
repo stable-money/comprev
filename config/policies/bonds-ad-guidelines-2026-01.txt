@@ -1,0 +1,176 @@
+Advertisement Guidelines - OBPP
+
+February 2026
+
+Advertisement Categories
+Category
+Resource
+Timelines for Approvals
+Pre-approved Template Advertisements
+Pre-approved templates by Exchange via OBPP Association can be found here.Guidelines on usage of pre-approved templates can be found under (2).
+Can be used immediately after internal review, without Exchange approval.
+Approved Advertisements
+Tracker with all approved advertisements and their status can be found here.Guidelines on usage of approved advertisements can be found under (3).
+Can be used for 180 days from the date of approval, without further Exchange approval at each instance of use.
+Educational Content
+Instructions for creation of educational content can be found under (4).
+Can be used immediately after internal review, without Exchange Approval.
+New Advertisement
+Instructions for fresh filing can be found under (5).
+Videos: T-10 days
+Creatives: T-9 days
+Comms: T-9 days
+Templates: T-10 days
+“T” being the date of release of advertisement. Please note, for the advertisements requiring regulatory approval, submissions to the exchange must be made by at least T-7 days, which is included in the above timelines.
+
+Guidelines | Pre-Approved Templates
+Please take into consideration the comments from NSE (Sonal) on the document with pre-approved Ads, before using these. Treat these comments to have been accepted and incorporated, until further notice.
+Each pre-approved template is to be used in its entirety for an Ad without picking language from multiple pre-approved templates to create an Ad.
+Pre-approved templates may be redesigned to different Ad mediums like a Gen AI video, creative, etc. while not changing the content of the pre-approved template.
+Ads, even if designed based on an pre-approved template, cannot feature or use names/photos of Celebrities.
+Ads generated out of pre-approved templates shall also include all mandatory information - (a) OBPP name, logo (b) SEBI registration number (c) DP SEBI Registration Number (c) Membership no. of NSE (90363) and BSE (6829 Inactive Member) (d) Registered office address (e) Logo of Stable Bonds Standard warning (min font size 10): “Fixed returns do not constitute guaranteed or assured returns. Investments in corporate debt securities, municipal debt securities/securitised debt instruments are subject to credit risks, market risks and default risks including delay and/or default in payment. Read all the offer related documents carefully.” Where the above mentioned details cannot be included (such as in an SMS/ Whatsapp Comm), then a hyperlink to the official website i.e., www.stablebonds.in must be provided in such SMS/Message/Pop-up/Whatsapp Comm, etc. since the website contains all these necessary information.
+If a pre-approved template is being redesigned into a video, the Standard Warning shall be included in both audio and visual format (min 8 second duration).
+Pre-approved templates may be translated verbatim into a regional language for usage. If this is done, the Standard Warning shall be in the respective regional language.
+Marketing team to maintain a record of usage of pre-approved Ads here , as this is required for quarterly reporting with NSE.
+Guidelines | Approved Advertisements
+Approved Ads are to be used without any changes (except design changes), in its entirety, and in accordance with any undertakings made to the Exchange.
+Approved Ads may be redesigned to different Ad mediums like videos, creative, comms etc. without any other changes to the Approved Ad.
+Approved Ads and all ads created out of them cannot feature, use the name/photo of Celebrities.
+Approved Ads and all ads created out of them shall include all mandatory information - (a) OBPP name, logo (b) SEBI registration number of Stock Broker and DP (c) Membership no. of NSE and BSE (d) Registered office address (e) Logo of Stable Bonds Standard warning (min font size 10): “Fixed returns do not constitute guaranteed or assured returns. Investments in corporate debt securities, municipal debt securities/securitised debt instruments are subject to credit risks, market risks and default risks including delay and/or default in payment. Read all the offer related documents carefully”
+Where the above mentioned details cannot be included (such as in an SMS/ Whatsapp Comm), then a hyperlink to the official website i.e., www.stablebonds.in must be provided in such SMS/Message/Pop-up/Whatsapp Comm, etc. since the website contains all these necessary information.
+In addition to the mandatory information, Approved Ads and all ads created out of them, shall include any other disclaimers as applicable (detailed below).
+Approved Ads may be translated verbatim into a regional language for usage. If this is done, the Standard Warning shall be in the respective regional language.
+Approved Ads may be repurposed within the 180-day time period with factual changes. Even if the Ad with the factual change is not being filed for approval, data/information to back facts must be available, if asked for.
+If an Approved Ad is a video, the title of the video, description, pinned comment (from Stable Bonds), and ancillary content of such nature shall also be language that is part of the Approved Ad. These fields shall not be used in a manner that violates the Ad Code.
+Guidelines | Educational Content
+Stick to factual, educational and informational content. Ad Code permits educational/information content, knowledge sharing/training, and communication limited to market commentary, discussion on economic news and educational information/knowledge sharing on capital market concepts.
+Only factual, educational, and informational content that can be corroborated with a source be used.
+Differentiate between facts and opinion.
+Disclaimer that “the video is for educational purposes only and does not constitute investment advice or a recommendation” is to be included.
+No product specific claims to be made i.e., no mention of Stable Bonds’ feature or offerings.
+
+No redirection to Stable Bonds platform, through link or any other means.
+We should not recommend users to "download stable bonds” or say “invest now”, “stable bonds is the best platform", or use any other inducing statements.
+All guidelines listed under (5), applicable to New Advertisements, shall be applicable to all educational content. Educational content is also required to strictly adhere to the Ad Code.
+Guidelines | New Advertisements
+If the proposed Ad does not fall under a Pre-approved template Ad, Approved Ads, and Educational Content, it will have to be filed with the Exchange for prior approval.
+If any proposed Ad has been redesigned from a Pre-approved Ad and/or Approved Ad, but is required to be filed for any reason (change in artist, change in language that does not amount to factual change, etc), such Ad will have to comply with all recent guidelines from NSE in addition to all New Advertisements’ guidelines.
+If there is a mention of content pertaining to any other business activity such as Mutual Funds, in the advertisement, then respective registration number where applicable must be mentioned.
+If mentioning brokerage schemes, add ‘Brokerage will not exceed SEBI’s limit’.
+Charts/illustrations/pictorial representation must have a verified source or must be accompanied by disclaimer ‘Image is solely for representation purposes’, as applicable.
+Any Ad containing factual information (e.g., numbers, percentages, statistics, rankings, or claims) must be backed by a verifiable source.
+Any Ad containing “9-12%” should have both numbers (9 and 12) in the same font size.
+Any Ad containing percentage of returns must be accompanied with “p.a.” and thus, for instance, shall read “9-12% p.a.”, “11% p.a.” etc.
+At the beginning of every video/content SEBI has mandated the entities to all Registered name and all registration numbers that the entity is holding Registration disclosure:SEBI Registered Intermediary Name- Stable Broking Private LimitedStock Broker – INZ000314637 | NSE Member Code- 90363 | BSE Member Code- 6829 (inactive)Depository Participant – IN-DP-7912025
+
+What not to do:
+
+No misleading claims. For example, phrases like “best bond”
+No exaggerated promises. For example, phrases like “best for beginners”.
+No use of superlatives like “Best”, “No. 1”, “Largest”, “Most trusted”, “Leading”, “Highest Returns”.
+No guaranteed returns. For example, “12% returns”
+No market player comparison.
+No risk-free claims. For example, phrases like “safe bonds”, “zero risk”. Instead use “minimal risk”.
+No usage of SEBI/Exchange Logos.
+No alluring phrases. For example, phrases like “attractive returns”.
+No inducing phrases. For example, phrases that create a sense of urgency “last few hours left”, “Final hours”, “wait too long and you might miss it”, “tap to book before the window closes tonight”, “few units left”, “selling fast”, “last few units”, “limited units” etc.
+No association with promotional games/schemes.
+No competitions/schemes/games that promote Stable Bonds or trading activity. For example,
+No reference to speculated Repo Rate cut.
+No promotion of specific bonds, past returns, etc.
+No incentives (coupons, gifts, contests, vouchers, certificates, tokens) for trade.
+No usage of logo of Bond issuers without consent.
+No comparison with other financial instruments like FDs, Mutual Funds, or the equity market, in a derogatory manner. For example, “Bonds provide better returns than FDs” is not permitted. Instead “Bonds, like FDs and Mutual Funds, is another investment option” is permitted.
+No use of “100% Repayment”, “Zero Default”, “% Sold” unless this can be substantiated by a CA certificate.
+No use of data on the number of investors (i.e., “20L+ have invested in Stable Bonds”) unless this can be substantiated by a CA certificate.
+No use of strike-off (i.e., 10%  10.25% YTM). Instead use “Earlier YTM 10% and Present YTM 10.25%”.
+No pictorial representation of ‘higher returns’. For example, crown on 12%, 9-12% with 12% in a larger font, etc.
+No use of passive income. Ads showing Bonds as second income not permitted. For example, buying a house, going on a vacation [Goal based creatives - not permitted]
+No reference to ‘Stable Bonds’ as a SEBI Registered Broker/SEBI Registered Entity/SEBI Regulated or alike phrases that indicate association with SEBI.
+Showing interest amounts in the Ad without mention of other values (like principal amount, tenure, interest, etc) is not allowed.
+Do not link salary with interest from bonds. For example, for using it to pay electricity bill, buying groceries, etc.
+
+Specific terms that cannot be used:
+Do Not Use
+Instead Use
+“SEBI regulated bonds” ,“SEBI Registered”, “SEBI Regulated Platform”, “SEBI Registered Platform”
+“SEBI registered broker”
+“Highest Returns” “High Returns”
+“Fixed Returns”
+India’s Bond Booking Platform
+“SEBI registered broker”
+“Monthly Payout” “Monthly Interest” [Permitted only if used in reference to a specific security that offers monthly payout]
+“Regular Payout”
+“Ek safer aur low risk investment option”
+Rephrase
+“Waise hi FD aur Bonds milke ek stable portfolio banate hai”
+Rephrase
+“Your safe space for stable investments”
+Rephrase
+Turning savings into monthly income.
+Rephrase
+“higher security”
+Rephrase
+“Principal stays safe with short term bonds”
+Rephrase
+
+Content exempted from Exchange Approval
+Ads based on Pre-approved templates
+Ads redesigned from Approved Ads within 180 days of approval
+Educational content, including market commentary, economic news, etc.
+General greetings (e.g., Diwali wishes)
+Emails and Whatsapp messages issued to registered users only through their registered email and/or number. Shall be accompanied with a disclaimer “the information is only for consumption by the client and such material should not be redistributed”.
+In-app nudges, creatives, etc. that are based on Pre-approved templates, or Approved Ads.
+
+Filing Process
+
+The following documents to be provided for filing:
+Cover Letter for Video Filing duly filled with necessary information. Standard format available here.
+Artist Undertaking on OBPP’s Letterhead duly filled with necessary information. Standard format available here.
+If scripts are being filed, it is recommended that it be as descriptive as possible (along with description of visuals planned to be shown), in order to ensure Exchange gives us comprehensive comments.
+If an Ad being filed is based on an earlier Approved Ad, Pre-approved Template, reference to the reference number/template number be added in the filing document as ‘Notes to Exchange’.
+Sources for backing claims/facts ought to be credible, recent, and from an authorized entity (e.g., stock exchange reports, financial institutions, or regulatory bodies). Source Links to be added in the filing document/Cover Letter for Video Filing.
+
+Mandatory Disclaimers Based on Content Type
+Instance/Mentioned Term
+Disclaimer Required
+
+Global Disclaimer (to be mentioned in every ad)
+OBPP Name: Stable Broking Private Limited
+SEBI Registration No (Stock Broker): INZ000314637
+SEBI Registration No (DP): INDP7912025
+Registered Office: Third floor, Block A, Stable Money, Bhive HSR Premium Campus, Krishna Reddy Industrial Area, Kudlu gate, Bommanahalli, Bangalore, Karnataka, India, 560068
+Disclaimer: Fixed returns do not constitute guaranteed or assured returns. Investments in corporate debt securities, municipal debt securities/securitised debt instruments are subject to credit risks, market risks and default risks including delay and/or default in payment. Read all the offer related documents carefully
+YTM
+“For detailed calculation of YTM, please visit our website https://stablebonds.in/”
+Credit Ratings
+“For further verification of the ratings and details provided, please visit: https://stablebonds.in/”
+Specific Security Name
+“Securities offered/suggested, this is not a recommendation.”
+Educational Video
+“This video is for educational purposes only and does not constitute investment advice or a recommendation.”
+Monthly Payout
+The payouts for bonds is determined on the type of bond purchased by the retail investor and this information is available to the retail investor at the time when he picks the bond for purchase.
+Wherever Fixed Returns is mentioned
+*The inventories offered on the platform offer interest ranging from **% to **% fixed returns p.a.’
+
+Sell Anytime
+You are choosing to sell before maturity date therefore the sell transaction will be executed at the rates mentioned above subject to availability of buyer and prevailing interest rate at the time of sell. The inventories offered on the platform offer interest ranging from **% to **% fixed returns p.a.’
+
+Charts/illustrations/pictorial representation
+Image is solely for representation purposes.
+Emails and Whatsapp messages through Registered Email ID/Mobile Numbers
+The information is only for consumption by the client and such material should not be redistributed.
+Brokerage related ads
+Brokerage will not exceed SEBI’s limit
+Predictable Returns/Market volatility/Passive Income
+*This phrase aims to provide a general understanding of the nature of bonds, without making any promises or guarantees about returns. Investors should be aware of the risks and uncertainties associated with bond investments and make informed decisions accordingly. For detailed calculation of YTM, please click *****
+Advertisement which offers third party products
+*Third party products are not Exchange traded products and are not an offering of Stable Broking Pvt. Ltd. All disputes with respect to the third party products, would not have access to the Exchange investor redressal forum or arbitration mechanism provided by the Exchange.
+Advertisement showing the flexi tenure/variable tenure
+Disclaimer for the advertisement
+*In case a client opts to sell before maturity date, the sell transaction will be executed at the rates subject to availability of buyer and prevailing price/interest rate at the time of sell". For detailed calculation of YTM please click [_______].
+
+Disclaimer on the OBPP platform- ‘I/We am/are aware that I/we am/are purchasing variable tenure bonds and opting to sell bond before maturity and sell transaction will be executed subject to availability of buyer and prevailing price/interest rate at the time of sell".
+
+Advertisement Tracker – Marketing team to maintain status of all advertisements here.

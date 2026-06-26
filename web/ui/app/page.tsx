@@ -4,7 +4,7 @@ import { fetchReports, fetchActiveJobs } from "@/lib/api";
 import type { JobStage } from "@/lib/api";
 import { formatDuration } from "@/lib/status";
 import { StatusBadge } from "@/components/status-badge";
-import { MediaKindTag, Tag } from "@/components/notion";
+import { MediaKindTag, ProductTag, Tag } from "@/components/notion";
 import { HealthBanner } from "@/components/health-banner";
 import { UploadDialog } from "@/components/upload-dialog";
 import { AutoRefresh } from "@/components/auto-refresh";
@@ -72,9 +72,10 @@ export default async function Home() {
       ) : (
         <div className="border-border overflow-hidden rounded-md border">
           {/* Header row */}
-          <div className="text-muted-foreground grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 border-b border-[#e9e9e7] bg-[#f7f7f5] px-3 py-2 text-xs font-medium sm:grid-cols-[1fr_5rem_8rem_5rem_5rem]">
+          <div className="text-muted-foreground grid grid-cols-[1fr_auto_auto_auto_auto_auto] gap-4 border-b border-[#e9e9e7] bg-[#f7f7f5] px-3 py-2 text-xs font-medium sm:grid-cols-[1fr_5rem_5rem_8rem_5rem_5rem]">
             <span>Video</span>
             <span>Type</span>
+            <span>Product</span>
             <span>Status</span>
             <span className="text-right">Checks</span>
             <span className="text-right">Duration</span>
@@ -84,7 +85,7 @@ export default async function Home() {
             <Link
               key={j.job_id}
               href={`/jobs/${j.job_id}`}
-              className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-[#f1f1ef] px-3 py-2.5 transition-colors last:border-b-0 hover:bg-[#f7f7f5] sm:grid-cols-[1fr_5rem_8rem_5rem_5rem]"
+              className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] items-center gap-4 border-b border-[#f1f1ef] px-3 py-2.5 transition-colors last:border-b-0 hover:bg-[#f7f7f5] sm:grid-cols-[1fr_5rem_5rem_8rem_5rem_5rem]"
             >
               <div className="min-w-0">
                 <div className="truncate font-medium">{j.video_id}</div>
@@ -94,6 +95,9 @@ export default async function Home() {
               </div>
               <div className="flex sm:w-20">
                 <MediaKindTag kind={j.kind} />
+              </div>
+              <div className="flex sm:w-20">
+                <ProductTag product={j.product} />
               </div>
               <div className="flex sm:w-32">
                 <Tag color="blue">
@@ -113,7 +117,7 @@ export default async function Home() {
             <Link
               key={r.video_id}
               href={`/reports/${encodeURIComponent(r.video_id)}`}
-              className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-[#f1f1ef] px-3 py-2.5 transition-colors last:border-b-0 hover:bg-[#f7f7f5] sm:grid-cols-[1fr_5rem_8rem_5rem_5rem]"
+              className="grid grid-cols-[1fr_auto_auto_auto_auto_auto] items-center gap-4 border-b border-[#f1f1ef] px-3 py-2.5 transition-colors last:border-b-0 hover:bg-[#f7f7f5] sm:grid-cols-[1fr_5rem_5rem_8rem_5rem_5rem]"
             >
               <div className="min-w-0">
                 <div className="truncate font-medium">{r.video_id}</div>
@@ -129,6 +133,9 @@ export default async function Home() {
                 ) : (
                   <span className="text-muted-foreground text-sm">—</span>
                 )}
+              </div>
+              <div className="flex sm:w-20">
+                <ProductTag product={r.product} />
               </div>
               <div className="flex sm:w-32">
                 <StatusBadge status={r.overall_status} />

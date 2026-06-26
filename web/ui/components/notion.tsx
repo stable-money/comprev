@@ -66,3 +66,27 @@ export function MediaKindTag({
     </Tag>
   );
 }
+
+// Maps a product (mutual_funds/bonds) to a labelled, colour-coded tag.
+const PRODUCT_TAGS: Record<string, { color: TagColor; label: string }> = {
+  mutual_funds: { color: "blue", label: "MF" },
+  bonds: { color: "purple", label: "Bonds" },
+};
+
+export function ProductTag({
+  product,
+  className,
+}: {
+  product?: string | null;
+  className?: string;
+}) {
+  if (!product) {
+    return <span className="text-muted-foreground text-sm">—</span>;
+  }
+  const meta = PRODUCT_TAGS[product] ?? { color: "gray" as TagColor, label: product };
+  return (
+    <Tag color={meta.color} className={className}>
+      {meta.label}
+    </Tag>
+  );
+}

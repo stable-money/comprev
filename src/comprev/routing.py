@@ -35,6 +35,7 @@ def route(
     video_id: str,
     duration_seconds: float,
     results: list[CheckResult],
+    product: str = "mutual_funds",
     policy_version: str | None = None,
     policy_source: str | None = None,
     checks_hash: str | None = None,
@@ -60,6 +61,7 @@ def route(
 
     return VideoReport(
         video_id=video_id,
+        product=product,
         duration_seconds=duration_seconds,
         overall_status=overall,
         checks=results,

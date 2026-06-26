@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from .config import EngineConfig, checks_hash
+from .config import EngineConfig, checks_hash, checks_path_for, resolve_product
 from .routing import route
 from .schemas import (
     Check,
@@ -137,6 +137,7 @@ def run_video(
     video_path: Path | str,
     checks: list[Check],
     cfg: EngineConfig,
+    product: str = "mutual_funds",
     out_root: Path | str = "out",
     skip_visual: bool = False,
     skip_audio: bool = False,
@@ -147,9 +148,11 @@ def run_video(
     artifacts_dir = Path(out_root) / video_id
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
+    pc = resolve_product(cfg, product)
+
     if stub:
         # Scaffold mode: no ML deps, no API. Everything is uncertain (fail-safe).
-        return _stub_report(video_id, checks, cfg)
+        return _stub_report(video_id, checks, cfg, product=product)
 
     corpus: Optional[VisualCorpus] = None
     transcript: Optional[Transcript] = None
@@ -189,9 +192,10 @@ def run_video(
 
     return route(
         video_id, duration, results,
-        policy_version=cfg.policy.version,
-        policy_source=cfg.policy.source_file,
-        checks_hash=checks_hash(),
+        product=product,
+        policy_version=pc.policy.version,
+        policy_source=pc.policy.source_file,
+        checks_hash=checks_hash(checks_path_for(pc)),
     )
 
 
@@ -199,6 +203,7 @@ def _stub_report(
     video_id: str,
     checks: list[Check],
     cfg: EngineConfig | None = None,
+    product: str = "mutual_funds",
 ) -> VideoReport:
     results = [
         CheckResult(
@@ -214,9 +219,11 @@ def _stub_report(
         )
         for c in checks
     ]
+    pc = resolve_product(cfg, product) if cfg else None
     return route(
         video_id, 0.0, results,
-        policy_version=cfg.policy.version if cfg else None,
-        policy_source=cfg.policy.source_file if cfg else None,
-        checks_hash=checks_hash() if cfg else None,
+        product=product,
+        policy_version=pc.policy.version if pc else None,
+        policy_source=pc.policy.source_file if pc else None,
+        checks_hash=checks_hash(checks_path_for(pc)) if pc else None,
     )

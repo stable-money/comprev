@@ -17,11 +17,16 @@ from rich.table import Table
 from .config import (
     DEFAULT_CHECKS_PATH,
     DEFAULT_ENGINE_PATH,
+    checks_path_for,
     load_checks,
     load_engine_config,
+    resolve_product,
 )
 from .engine import run_video
 from .report import write_report
+from .schemas import Product
+
+_PRODUCTS = [p.value for p in Product]
 
 app = typer.Typer(add_completion=False, help="MF Video Compliance Engine (Phase 1)")
 console = Console()
@@ -32,9 +37,9 @@ _STATUS_STYLE = {"pass": "green", "fail": "bold red", "uncertain": "yellow", "ne
 @app.command()
 def run(
     video: Path = typer.Argument(..., exists=False, help="Path to the marketing video."),
-    product: str = typer.Option("mutual_funds", help="Declared product (Phase 1: mutual_funds only)."),
+    product: str = typer.Option("mutual_funds", help="Product to review against: mutual_funds | bonds."),
     out: Path = typer.Option(Path("out"), help="Output root directory."),
-    checks_path: Path = typer.Option(DEFAULT_CHECKS_PATH, "--checks", help="Check library YAML."),
+    checks_path: Optional[Path] = typer.Option(None, "--checks", help="Check library YAML (default: the product's library from engine.yaml)."),
     engine_path: Path = typer.Option(DEFAULT_ENGINE_PATH, "--engine-config", help="Engine config YAML."),
     stub: bool = typer.Option(False, "--stub", help="Scaffold mode: no ML deps / no API; all checks uncertain."),
     fast: bool = typer.Option(False, "--fast", help="Faster iteration: downscale frames + mobile OCR detector + Whisper 'medium'. Trades some accuracy for speed."),
@@ -42,13 +47,14 @@ def run(
     skip_audio: bool = typer.Option(False, help="Skip the audio pipeline."),
 ):
     """Review a single video and emit out/<video_id>.json and .md."""
-    if product != "mutual_funds":
-        raise typer.BadParameter("Phase 1 supports product 'mutual_funds' only.")
+    if product not in _PRODUCTS:
+        raise typer.BadParameter(f"Unknown product {product!r}. Choose from: {', '.join(_PRODUCTS)}.")
     if not stub and not video.exists():
         raise typer.BadParameter(f"Video not found: {video}")
 
-    checks = load_checks(checks_path)
     cfg = load_engine_config(engine_path)
+    pc = resolve_product(cfg, product)
+    checks = load_checks(checks_path or checks_path_for(pc))
 
     if fast:
         # Speed overrides for iteration — NOT the trustworthy-verdict config.
@@ -68,7 +74,8 @@ def run(
         console.print("[yellow]Running in --stub mode (no pipelines / no API).[/yellow]")
 
     report = run_video(
-        video, checks, cfg, out_root=out, skip_visual=skip_visual, skip_audio=skip_audio, stub=stub
+        video, checks, cfg, product=product, out_root=out,
+        skip_visual=skip_visual, skip_audio=skip_audio, stub=stub,
     )
     json_path, md_path = write_report(report, out)
 
@@ -103,10 +110,17 @@ def eval_cmd(
 
 
 @app.command()
-def checks(checks_path: Path = typer.Option(DEFAULT_CHECKS_PATH, "--checks", help="Check library YAML.")):
+def checks(
+    product: str = typer.Option("mutual_funds", help="Product whose library to list: mutual_funds | bonds."),
+    checks_path: Optional[Path] = typer.Option(None, "--checks", help="Check library YAML (default: the product's library)."),
+    engine_path: Path = typer.Option(DEFAULT_ENGINE_PATH, "--engine-config", help="Engine config YAML."),
+):
     """List the loaded compliance checks."""
-    loaded = load_checks(checks_path)
-    table = Table(title=f"MF check library ({len(loaded)} checks)")
+    if product not in _PRODUCTS:
+        raise typer.BadParameter(f"Unknown product {product!r}. Choose from: {', '.join(_PRODUCTS)}.")
+    pc = resolve_product(load_engine_config(engine_path), product)
+    loaded = load_checks(checks_path or checks_path_for(pc))
+    table = Table(title=f"{pc.label} check library ({len(loaded)} checks)")
     for col in ("id", "surface", "severity", "applies_when", "method"):
         table.add_column(col)
     for c in loaded:

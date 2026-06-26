@@ -22,6 +22,7 @@ class ReportSummary(BaseModel):
     n_checks: int
     modified_at: float  # epoch seconds, for sorting newest-first
     media_kind: Optional[Literal["video", "image", "audio"]] = None
+    product: Optional[str] = None  # "mutual_funds" | "bonds" (None on older reports)
 
 
 class JobAccepted(BaseModel):
@@ -35,6 +36,7 @@ class JobStatus(BaseModel):
     job_id: str
     video_id: str
     kind: Literal["video", "image", "audio"] = "video"
+    product: Optional[str] = None
     stage: Literal[
         "queued", "sampling", "transcribing", "evaluating", "routing", "done", "error"
     ]

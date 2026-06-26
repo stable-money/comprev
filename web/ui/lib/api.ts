@@ -79,6 +79,7 @@ export interface ReportSummary {
   n_checks: number;
   modified_at: number;
   media_kind?: MediaKind | null;
+  product?: Product | null;
 }
 
 export interface Health {
@@ -88,6 +89,14 @@ export interface Health {
 }
 
 export type MediaKind = "video" | "image" | "audio";
+
+// Mirrors comprev.schemas.Product. Each product has its own check library + policy.
+export type Product = "mutual_funds" | "bonds";
+
+export const PRODUCTS: { value: Product; label: string }[] = [
+  { value: "mutual_funds", label: "Mutual Funds" },
+  { value: "bonds", label: "Bonds" },
+];
 
 export type JobStage =
   | "queued"
@@ -102,6 +111,7 @@ export interface JobStatus {
   job_id: string;
   video_id: string;
   kind: MediaKind;
+  product?: Product | null;
   stage: JobStage;
   report_ready: boolean;
   error: string | null;
@@ -160,14 +170,22 @@ export async function fetchActiveJobs(): Promise<JobStatus[]> {
   }
 }
 
-export async function fetchChecks(): Promise<Check[]> {
-  const res = await fetch(`${SERVER_BASE}/api/checks`, { cache: "no-store" });
+export async function fetchChecks(product: Product = "mutual_funds"): Promise<Check[]> {
+  const res = await fetch(
+    `${SERVER_BASE}/api/checks?product=${encodeURIComponent(product)}`,
+    { cache: "no-store" },
+  );
   if (!res.ok) return [];
   return res.json();
 }
 
-export async function fetchPolicyFiles(): Promise<PolicyFile[]> {
-  const res = await fetch(`${SERVER_BASE}/api/policies`, { cache: "no-store" });
+export async function fetchPolicyFiles(
+  product: Product = "mutual_funds",
+): Promise<PolicyFile[]> {
+  const res = await fetch(
+    `${SERVER_BASE}/api/policies?product=${encodeURIComponent(product)}`,
+    { cache: "no-store" },
+  );
   if (!res.ok) return [];
   return res.json();
 }

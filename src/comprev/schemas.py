@@ -20,6 +20,13 @@ from pydantic import BaseModel, Field
 # --------------------------------------------------------------------------- #
 # Enumerations                                                                 #
 # --------------------------------------------------------------------------- #
+class Product(str, Enum):
+    """A reviewable product line. Each has its own check library + policy."""
+
+    mutual_funds = "mutual_funds"
+    bonds = "bonds"
+
+
 class Surface(str, Enum):
     """Where a check looks for evidence."""
 
@@ -211,7 +218,7 @@ class CheckResult(BaseModel):
 
 class VideoReport(BaseModel):
     video_id: str
-    product: Literal["mutual_funds"] = "mutual_funds"
+    product: Product = Product.mutual_funds
     duration_seconds: float = 0.0
     overall_status: OverallStatus
     checks: list[CheckResult] = Field(default_factory=list)

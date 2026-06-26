@@ -2,8 +2,10 @@
 
 import { useState, type ReactNode } from "react";
 import { ChevronRight, FileText, Loader2 } from "lucide-react";
-import type { Check, PolicyFile } from "@/lib/api";
+import { PRODUCTS } from "@/lib/api";
+import type { Check, PolicyFile, Product } from "@/lib/api";
 import { Tag, type TagColor } from "@/components/notion";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 
 function prettyId(id: string): string {
-  return id.replace(/^mf_/, "").replace(/_/g, " ");
+  return id.replace(/^(mf|bonds)_/, "").replace(/_/g, " ");
 }
 
 function formatBytes(n: number): string {
@@ -58,8 +60,8 @@ function PropertyRow({ label, value }: { label: string; value: ReactNode }) {
 }
 
 export function PoliciesView({
-  policyFiles,
-  checks,
+  policyFiles: initialPolicyFiles,
+  checks: initialChecks,
 }: {
   policyFiles: PolicyFile[];
   checks: Check[];
@@ -71,13 +73,40 @@ export function PoliciesView({
   const [source, setSource] = useState<string | null>(null);
   const [loadingSource, setLoadingSource] = useState(false);
 
+  // Product toggle. Server-rendered with the mutual_funds library; switching
+  // refetches that product's checks + source files via the same-origin proxy.
+  const [product, setProduct] = useState<Product>("mutual_funds");
+  const [policyFiles, setPolicyFiles] = useState<PolicyFile[]>(initialPolicyFiles);
+  const [checks, setChecks] = useState<Check[]>(initialChecks);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+
+  function selectProduct(p: Product) {
+    if (p === product) return;
+    setProduct(p);
+    setLoadingProduct(true);
+    Promise.all([
+      fetch(`/api/checks?product=${encodeURIComponent(p)}`).then((r) =>
+        r.ok ? r.json() : [],
+      ),
+      fetch(`/api/policies?product=${encodeURIComponent(p)}`).then((r) =>
+        r.ok ? r.json() : [],
+      ),
+    ])
+      .then(([nextChecks, nextFiles]) => {
+        setChecks(nextChecks);
+        setPolicyFiles(nextFiles);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingProduct(false));
+  }
+
   // Open the file overlay and fetch its raw contents. Browser-side, so use the
   // same-origin /api proxy rather than the server base.
   function viewFile(f: PolicyFile) {
     setOpenFile(f);
     setSource(null);
     setLoadingSource(true);
-    fetch(`/api/policies/${encodeURIComponent(f.name)}`)
+    fetch(`/api/policies/${encodeURIComponent(f.name)}?product=${encodeURIComponent(product)}`)
       .then((r) => (r.ok ? r.text() : Promise.reject(new Error(String(r.status)))))
       .then(setSource)
       .catch(() => setSource("Could not load this policy file."))
@@ -86,6 +115,28 @@ export function PoliciesView({
 
   return (
     <div className="space-y-10">
+      {/* Product toggle — each product has its own check library + policy. */}
+      <div className="flex items-center gap-2">
+        <div className="inline-flex rounded-md border border-border p-0.5">
+          {PRODUCTS.map((p) => (
+            <button
+              key={p.value}
+              onClick={() => selectProduct(p.value)}
+              className={cn(
+                "rounded px-3 py-1 text-sm transition-colors",
+                product === p.value
+                  ? "bg-accent font-medium"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        {loadingProduct && (
+          <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+        )}
+      </div>
       {/* Policy source files — Notion file/link blocks */}
       <section>
         <SectionLabel>Source files</SectionLabel>
